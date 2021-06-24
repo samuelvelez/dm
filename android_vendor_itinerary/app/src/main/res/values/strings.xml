@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">Planning</string>
+
+    <string name="action_settings">Add a Printer</string>
+
+    <string name="zebra_technologies_corp">Zebra Technologies Corp.</string>
+    <string name="zebra_address_line_1"><b>ISV TEAM</b>, Lincolnshire IL, 60069.</string>
+    <string name="zebra_address_line_2">Visit <a href="https://developer.motorolasolutions.com/welcome">developer.zebra.com</a> for more support.</string>
+
+
+    <string name="print">Print</string>
+    <string name="cancel">Cancel</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+
+    <string name="printer_status">Printer Status</string>
+    <string name="rotation_prompt">Choose a rotation</string>
+    <string name="image_selection">Select an Image</string>
+    <string name="sign_and_print">Print</string>
+    <string name="sign_here">Sign here:</string>
+
+    <string name="store_check">Check to store on printer</string>
+    <string name="path_hint">Path to store on printer</string>
+    <string name="printer_selection">Select a Printer</string>
+    <string name="discovered_printers">Discovered printers</string>
+    <string name="searching_for_printers">Searching for printers&#8230;</string>
+    <string name="connecting_to_printer">Connecting to printer&#8230;</string>
+    <string name="printer_connected">Printer connected</string>
+    <string name="printer_connection_failed">Printer connection failed</string>
+    <string name="connected_to_printer">Connected to printer:</string>
+    <string name="connection_error">Connection error</string>
+    <string name="print_successful">Print successful</string>
+    <string name="print_failed">Print failed:</string>
+    <string name="printer_paused">Printer paused</string>
+    <string name="head_open">Head open</string>
+    <string name="paper_out">Paper out</string>
+    <string name="cannot_print">Cannot print</string>
+    <string name="no_printers_found">No printers found</string>
+    <string name="usuario">Usuario</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="clientes">Clientes</string>
+    <string name="buscar_cliente">Buscar Cliente</string>
+    <string name="cliente">Cliente</string>
+    <string name="divisi_n">División</string>
+    <string name="forma_pago">Forma Pago</string>
+    <string name="documento"># Documento</string>
+    <string name="cuenta">Cuenta</string>
+    <string name="fecha_cheque">Fecha Cheque</string>
+    <string name="fecha_entrega">Fecha Entrega</string>
+    <string name="ver_detalle">Ver Detalle</string>
+    <string name="guardra_e_imprimir">Guardra e Imprimir</string>
+    <string name="ip_dns">IP/DNS</string>
+    <string name="bluetooth_r">Bluetooth (R)</string>
+    <string name="ip_address">Ip Address:</string>
+    <string name="port">Port:</string>
+    <string name="_9100">9100</string>
+    <string name="mac_address">MAC Address:</string>
+    <string name="find_available_channels">Find Available Channels</string>
+    <string name="planificaci_n">Planificación</string>
+    <string name="dash">-</string>
+    <string name="total">Total</string>
+    <string name="_0">0</string>
+    <string name="aceptor">Aceptor</string>
+    <string name="abc">ABC</string>
+    <string name="xyz">XYZ</string>
+    <string name="_09_00_00">09:00:00</string>
+    <string name="pqr">PQR</string>
+    <string name="id">ID</string>
+    <string name="factura">Factura</string>
+    <string name="saldo">Saldo</string>
+</resources>

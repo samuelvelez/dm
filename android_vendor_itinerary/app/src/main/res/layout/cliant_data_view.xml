@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/select_view"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/abcd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_25dip"
+        android:layout_marginTop="@dimen/_8dip"
+        android:layout_marginRight="@dimen/_25dip"
+        android:layout_marginBottom="@dimen/_8dip">
+
+        <TextView
+            android:id="@+id/cust_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5dip"
+            android:text="@string/abc"
+            android:textColor="@android:color/black"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/cust_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cust_id"
+            android:layout_marginTop="@dimen/_5dip"
+            android:text="@string/pqr"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cust_name"
+            android:layout_marginTop="@dimen/_5dip"
+            android:text="@string/xyz"
+            android:textColor="@android:color/black"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_2dip"
+        android:layout_below="@+id/abcd"
+        android:background="@android:color/black" />
+
+</RelativeLayout>

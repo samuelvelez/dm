@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/plate"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30dip">
+
+        <TextView
+            android:id="@+id/verid"
+            android:layout_width="@dimen/_20dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="@string/id"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <TextView
+            android:id="@+id/facrura"
+            android:layout_width="@dimen/_100dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="@string/factura"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <TextView
+            android:id="@+id/saldo"
+            android:layout_width="@dimen/_20dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="@string/saldo"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/_5dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25">
+
+            <CheckBox
+                android:id="@+id/checkboxx"
+                android:layout_centerInParent="true"
+                android:layout_width="@dimen/_30dip"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relll"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1dip"
+        android:layout_below="@+id/plate"
+        android:background="@android:color/black" />
+
+
+</RelativeLayout>

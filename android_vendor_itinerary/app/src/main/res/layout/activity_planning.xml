@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:id="@+id/btn_logout"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_30dip"
+            android:layout_marginLeft="@dimen/_30dip"
+            android:src="@drawable/logout" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_50dip"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/planificaci_n"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_20sip" />
+
+        <ImageView
+            android:id="@+id/btn_sync"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_30dip"
+            android:layout_marginRight="@dimen/_30dip"
+            android:src="@drawable/refresh" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/nodataerror"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="datos no disponibles"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/listview_for_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:divider="@color/material_blue_grey_800" />
+
+    <ImageView
+        android:id="@+id/btn_cliants_add"
+        android:layout_width="@dimen/_50dip"
+        android:layout_height="@dimen/_50dip"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_20dip"
+        android:layout_marginRight="@dimen/_20dip"
+        android:layout_marginBottom="@dimen/_20dip"
+        android:src="@drawable/ic_add" />
+
+</RelativeLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/list_view_next_page"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/go_to_form"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50dip"
+        android:layout_marginLeft="@dimen/_25dip"
+        android:layout_marginTop="@dimen/_8dip"
+        android:layout_marginRight="@dimen/_25dip"
+        android:layout_marginBottom="@dimen/_8dip">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="@dimen/_80dip"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/_09_00_00"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/cust_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/_10dip"
+            android:layout_toRightOf="@+id/time"
+            android:text="@string/pqr"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_marginStart="@dimen/_10dip"
+            android:layout_toEndOf="@+id/time" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1dip"
+        android:layout_below="@+id/go_to_form"
+        android:background="@android:color/black" />
+
+</RelativeLayout>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/xyz"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30dip"
+        android:background="#B3B3B3">
+
+        <TextView
+            android:layout_width="@dimen/_20dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="@string/id"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <TextView
+            android:layout_width="@dimen/_100dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="@string/factura"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <TextView
+            android:layout_width="@dimen/_20dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="@string/saldo"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <TextView
+            android:layout_width="@dimen/_5dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="@string/dash"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relll"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1dip"
+        android:layout_below="@+id/xyz"
+        android:background="@android:color/black" />
+
+    <ListView
+        android:id="@+id/listview_for_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/relllll"
+        android:layout_below="@+id/relll"
+        android:divider="@color/material_blue_grey_800" />
+
+    <RelativeLayout
+        android:id="@+id/relllll"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50dip"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_20dip"
+            android:layout_marginLeft="@dimen/_20dip"
+            android:text="@string/total"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <TextView
+            android:id="@+id/totalll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_30dip"
+            android:layout_marginLeft="@dimen/_30dip"
+            android:layout_toEndOf="@+id/txt"
+            android:layout_toRightOf="@+id/txt"
+            android:background="@drawable/boarder_for_spinner"
+            android:paddingLeft="@dimen/_10dip"
+            android:paddingRight="@dimen/_10dip"
+            android:text="@string/_0"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15sip" />
+
+        <Button
+            android:id="@+id/btn_aceptor"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30dip"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_20dip"
+            android:layout_marginRight="@dimen/_20dip"
+            android:background="@color/colorPrimary"
+            android:text="@string/aceptor"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent" />
+    </RelativeLayout>
+
+</RelativeLayout>

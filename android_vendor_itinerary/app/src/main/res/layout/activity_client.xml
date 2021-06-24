@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_50dip"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/clientes"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_20sip" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_42dip"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="@dimen/_10dip"
+        android:layout_marginBottom="@dimen/_10dip">
+
+        <ImageView
+            android:id="@+id/img_search"
+            android:layout_width="@dimen/_18dip"
+            android:layout_height="@dimen/_18dip"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_8dip"
+            android:layout_marginLeft="@dimen/_8dip"
+            android:src="@drawable/searchicon" />
+
+        <EditText
+            android:id="@+id/data_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_6dip"
+            android:layout_marginLeft="@dimen/_6dip"
+            android:layout_marginEnd="@dimen/_6dip"
+            android:layout_marginRight="@dimen/_6dip"
+            android:layout_toEndOf="@+id/img_search"
+            android:layout_toRightOf="@+id/img_search"
+            android:hint="@string/buscar_cliente"
+            android:inputType="textCapCharacters"
+            android:textAllCaps="true"
+            android:textColorHint="#c3c3c3"
+            android:textSize="@dimen/_14sip" />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/simpleListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search_bar" />
+
+    <TextView
+        android:id="@+id/nodataerror"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="datos no \ndisponibles"
+        android:textSize="40dp"
+        android:textColor="@android:color/black"
+        android:visibility="gone" />
+
+</RelativeLayout>

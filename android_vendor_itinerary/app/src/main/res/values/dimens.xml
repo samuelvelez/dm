@@ -1,0 +1,31 @@
+<resources>
+    <dimen name="_16dip">16dp</dimen>
+    <dimen name="_8dip">8dp</dimen>
+    <dimen name="_12sip">12sp</dimen>
+    <dimen name="_72dip">72dp</dimen>
+    <dimen name="_10dip">10dp</dimen>
+    <dimen name="_20sip">20sp</dimen>
+    <dimen name="_42dip">42dp</dimen>
+    <dimen name="_18dip">18dp</dimen>
+    <dimen name="_50dip">50dp</dimen>
+    <dimen name="_6dip">6dp</dimen>
+    <dimen name="_14sip">14sp</dimen>
+    <dimen name="_30dip">30dp</dimen>
+    <dimen name="_60dip">60dp</dimen>
+    <dimen name="_15sip">15sp</dimen>
+    <dimen name="_20dip">20dp</dimen>
+    <dimen name="_100dip">100dp</dimen>
+    <dimen name="_1dip">1dp</dimen>
+    <dimen name="_5dip">5dp</dimen>
+    <dimen name="_25dip">25dp</dimen>
+    <dimen name="_35dip">35dp</dimen>
+    <dimen name="_3dip">3dp</dimen>
+    <dimen name="_130dip">130dp</dimen>
+    <dimen name="_150dip">150dp</dimen>
+    <dimen name="_16sip">16sp</dimen>
+    <dimen name="_70dip">70dp</dimen>
+    <dimen name="_2dip">2dp</dimen>
+    <dimen name="_80dip">80dp</dimen>
+
+
+</resources>

@@ -1,0 +1,47 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:fontFamily">@font/font</item>
+
+    </style>
+
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="android:background">@color/zebra_blue</item>
+        <item name="background">@color/zebra_blue</item>
+        <item name="titleTextStyle">@style/MyTitleTextStyle</item>
+
+
+    </style>
+
+    <style name="MyTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
+
+    <style name="TextColor" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/light_gray</item>
+        <item name="android:textSize">@dimen/_18dip</item>
+    </style>
+
+    <style name="ErrorButtonAppearance">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/_16sip</item>
+        <item name="android:textColor">#FF0000</item>
+    </style>
+
+    <style name="ButtonAppearance">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/_16sip</item>
+        <item name="android:textColor">@color/zebra_blue</item>
+    </style>
+
+    <style name="SpinnerTheme" parent="Widget.AppCompat.Spinner.DropDown">
+        <item name="android:checkMark">@color/bright_foreground_material_dark</item>
+    </style>
+
+</resources>

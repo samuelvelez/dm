@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <RelativeLayout
+                android:id="@+id/rel1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_50dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_1"
+                    android:layout_width="@dimen/_60dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/cliente"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <EditText
+                    android:id="@+id/txt_cliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_1"
+                    android:layout_toRightOf="@+id/txt_1"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel1"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_2"
+                    android:layout_width="@dimen/_60dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/divisi_n"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_2"
+                    android:layout_toRightOf="@+id/txt_2"
+                    android:background="@drawable/boarder_for_spinner">
+
+                    <Spinner
+                        android:id="@+id/spinner_division"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1dip"
+                android:layout_below="@+id/rel2"
+                android:layout_marginTop="@dimen/_10dip"
+                android:background="@android:color/black" />
+
+            <RelativeLayout
+                android:id="@+id/rel4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel3"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_4"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/forma_pago"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_4"
+                    android:layout_toRightOf="@+id/txt_4"
+                    android:background="@drawable/boarder_for_spinner">
+
+                    <Spinner
+                        android:id="@+id/spinner_forma_pago"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel4"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_5"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/documento"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <EditText
+                    android:id="@+id/et_documento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_5"
+                    android:layout_toRightOf="@+id/txt_5"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:textColor="@android:color/black" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel5"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_6"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/cuenta"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_6"
+                    android:layout_toRightOf="@+id/txt_6"
+                    android:background="@drawable/boarder_for_spinner">
+
+                    <Spinner
+                        android:id="@+id/spinner_cuenta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel6"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_7"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/total"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <EditText
+                    android:id="@+id/ed_total"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_7"
+                    android:layout_toRightOf="@+id/txt_7"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <Button
+                    android:id="@+id/btn_ver_detalle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10dip"
+                    android:layout_marginLeft="@dimen/_10dip"
+                    android:layout_toEndOf="@+id/ed_total"
+                    android:layout_toRightOf="@+id/ed_total"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/ver_detalle"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorAccent" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel7"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_8"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/fecha_cheque"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <EditText
+                    android:id="@+id/cheque_date"
+                    android:layout_width="@dimen/_150dip"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_8"
+                    android:layout_toRightOf="@+id/txt_8"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <ImageView
+                    android:id="@+id/cheque_date_img"
+                    android:layout_width="@dimen/_35dip"
+                    android:layout_height="@dimen/_35dip"
+                    android:layout_marginStart="@dimen/_5dip"
+                    android:layout_marginLeft="@dimen/_5dip"
+                    android:layout_toEndOf="@+id/cheque_date"
+                    android:layout_toRightOf="@+id/cheque_date"
+                    android:src="@drawable/ic_calendar"
+                    android:text="@string/ver_detalle" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel8"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_9"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/fecha_entrega"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <EditText
+                    android:id="@+id/entrega_date"
+                    android:layout_width="@dimen/_150dip"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_9"
+                    android:layout_toRightOf="@+id/txt_9"
+                    android:singleLine="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <ImageView
+                    android:id="@+id/entrega_date_img"
+                    android:layout_width="@dimen/_35dip"
+                    android:layout_height="@dimen/_35dip"
+                    android:layout_marginStart="@dimen/_5dip"
+                    android:layout_marginLeft="@dimen/_5dip"
+                    android:layout_toEndOf="@+id/entrega_date"
+                    android:layout_toRightOf="@+id/entrega_date"
+                    android:src="@drawable/ic_calendar"
+                    android:text="@string/ver_detalle" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_print"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel9"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_70dip"
+                android:background="@color/colorPrimary"
+                android:paddingLeft="@dimen/_10dip"
+                android:paddingRight="@dimen/_10dip"
+                android:text="@string/guardra_e_imprimir"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent" />
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

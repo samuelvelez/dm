@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#549C00</color>
+    <color name="colorPrimaryDark">#549C00</color>
+    <color name="colorAccent">#000000</color>
+
+    <color name="light_gray">#CCCCCC</color>
+    <color name="near_black">#222222</color>
+    <color name="zebra_blue">#00769F</color>
+    <color name="zebra_yellow">#FFD200</color>
+</resources>
