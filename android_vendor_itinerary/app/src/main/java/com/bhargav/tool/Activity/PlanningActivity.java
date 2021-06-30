@@ -78,6 +78,10 @@ public class PlanningActivity extends AppCompatActivity {
 
         simpleList = findViewById(R.id.simpleListView);
 
+        if (Utils.getData(context, "DataSaveDate") == null) {
+            Utils.saveData(context, "DataSaveDate", formattedDate);
+        }
+
         if (Utils.getData(context, "SaveDetallePlanifi") != null) {
 
             if (Utils.getData(context, "DataSaveDate").equals(formattedDate)) {

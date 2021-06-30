@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     public Utils shareprefrence;
     public Handler handler;
 
+    ArrayList<ClientesUtils> SaveDetallePlanifi = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,18 +80,6 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(context, "Encienda su Internet para continuar con la búsqueda", Toast.LENGTH_SHORT).show();
                     }
                 }
-
-
-                //   aa patiyu chhele kadhi nakhvanu chhe
-
-//                Utils.saveData(context, "Personal", String.valueOf(3017));
-//                dataCall();
-//                secondApiCall();
-//                shareprefrence.sharedPreferences.edit().putBoolean("id", true).apply();
-//                startActivity(new Intent(getApplicationContext(), PlanningActivity.class));
-//                finish();
-
-                // patiya antah
 
             }
         });
@@ -132,10 +121,12 @@ public class LoginActivity extends AppCompatActivity {
                 dataCall();
                 secondApiCall();
 
+                planificationApiCall();
+
                 shareprefrence.sharedPreferences.edit().putBoolean("id", true).apply();
 
-                startActivity(new Intent(getApplicationContext(), PlanningActivity.class));
-                finish();
+//                startActivity(new Intent(getApplicationContext(), PlanningActivity.class));
+//                finish();
 
                 startdialog.dismiss();
 
@@ -160,9 +151,66 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void planificationApiCall() {
+        final Dialog startdialog = new Dialog(context);
+        startdialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        Call<Planificaciones> call = RestClient.post().planificaciones(Utils.getData(context, "Personal"));
+        call.enqueue(new Callback<Planificaciones>() {
+            @Override
+            public void onResponse(Call<Planificaciones> call, Response<Planificaciones> response) {
+
+                if (response.isSuccessful()) {
+                    Planificaciones datas = response.body();
+
+                    if (datas.getMensaje().equals("OK")) {
+
+                        for (int i = 0; i < datas.lsDetallePlanificacions.size(); i++) {
+                            SaveDetallePlanifi.add(datas.lsDetallePlanificacions.get(i).lsClientesUtils.get(0));
+                        }
+
+                        Gson gson = new Gson();
+
+                        String json = gson.toJson(SaveDetallePlanifi);
+
+                        Utils.saveData(context, "SaveDetallePlanifi", json);
+
+                    } else {
+
+                        Toast.makeText(context, datas.getMensaje(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
+                }
+
+                startActivity(new Intent(getApplicationContext(), PlanningActivity.class));
+                finish();
+
+                startdialog.dismiss();
+
+            }
+
+            @Override
+            public void onFailure(Call<Planificaciones> call, Throwable t) {
+                startdialog.dismiss();
+                Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        startdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        startdialog.setContentView(R.layout.custom_progressdialog);
+        startdialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        startdialog.setCancelable(false);
+        startdialog.setCanceledOnTouchOutside(false);
+
+        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) startdialog.findViewById(R.id.avi);
+        avi.smoothToShow();
+        startdialog.show();
+
+    }
+
     private void secondApiCall() {
         ArrayList<String> nombreFormaPago = new ArrayList<String>();
-
 
         Call<FormasPago> call = RestClient.post().formasPago();
 
