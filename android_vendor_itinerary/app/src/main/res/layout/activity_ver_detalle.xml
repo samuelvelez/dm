@@ -9,62 +9,100 @@
         android:layout_height="@dimen/_30dip"
         android:background="#B3B3B3">
 
-        <TextView
+        <RelativeLayout
             android:layout_width="@dimen/_20dip"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0.25"
-            android:gravity="center"
-            android:text="@string/id"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/_15sip" />
+            android:layout_weight="0.2"
+            android:background="@drawable/boarder_squer">
 
-        <TextView
-            android:layout_width="@dimen/_100dip"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/id"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/_90dip"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0.25"
-            android:gravity="center"
-            android:text="@string/factura"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/_15sip" />
+            android:layout_marginLeft="-1dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/boarder_squer">
 
-        <TextView
-            android:layout_width="@dimen/_20dip"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/factura"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/_30dip"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0.25"
-            android:gravity="center"
-            android:text="@string/saldo"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/_15sip" />
+            android:layout_marginLeft="-1dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/boarder_squer">
 
-        <TextView
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/saldo"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/_30dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-1dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/boarder_squer">
+
+            <TextView
+                android:id="@+id/valor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/valor"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="@dimen/_5dip"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="-1dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/boarder_squer">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="0.25"
             android:gravity="center"
             android:text="@string/dash"
             android:textColor="@android:color/black"
             android:textSize="@dimen/_15sip" />
 
-
+        </RelativeLayout>
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/relll"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_1dip"
-        android:layout_below="@+id/xyz"
-        android:background="@android:color/black" />
 
     <ListView
         android:id="@+id/listview_for_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/relllll"
-        android:layout_below="@+id/relll"
+        android:layout_below="@+id/xyz"
         android:divider="@color/material_blue_grey_800" />
 
     <RelativeLayout

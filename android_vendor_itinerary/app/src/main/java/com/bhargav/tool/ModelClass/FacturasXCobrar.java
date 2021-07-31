@@ -53,15 +53,23 @@ public class FacturasXCobrar {
 
     private int isChecked = 0;
 
+    private String valor = "0";
+
     public int getIsChecked() {
         return isChecked;
     }
-
 
     public void setIsChecked(int isChecked) {
         this.isChecked = isChecked;
     }
 
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
 
     // Getter Methods
 

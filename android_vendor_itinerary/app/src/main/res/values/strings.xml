@@ -69,4 +69,5 @@
     <string name="id">ID</string>
     <string name="factura">Factura</string>
     <string name="saldo">Saldo</string>
+    <string name="valor">Valor</string>
 </resources>

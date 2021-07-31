@@ -110,13 +110,12 @@
                         android:id="@+id/spinner_forma_pago"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
+
                 </RelativeLayout>
-
-
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rel5"
+                android:id="@+id/rel_documento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rel4"
@@ -139,16 +138,16 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/txt_5"
                     android:layout_toRightOf="@+id/txt_5"
-                    android:singleLine="true"
                     android:inputType="number"
+                    android:singleLine="true"
                     android:textColor="@android:color/black" />
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rel6"
+                android:id="@+id/rel_cuenta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rel5"
+                android:layout_below="@+id/rel_documento"
                 android:layout_marginLeft="@dimen/_30dip"
                 android:layout_marginTop="@dimen/_20dip"
                 android:layout_marginRight="@dimen/_30dip">
@@ -182,7 +181,7 @@
                 android:id="@+id/rel7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rel6"
+                android:layout_below="@+id/rel_cuenta"
                 android:layout_marginLeft="@dimen/_30dip"
                 android:layout_marginTop="@dimen/_20dip"
                 android:layout_marginRight="@dimen/_30dip">
@@ -221,7 +220,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rel8"
+                android:id="@+id/rel_cheque_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rel7"
@@ -261,10 +260,10 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rel9"
+                android:id="@+id/rel_entrega_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rel8"
+                android:layout_below="@+id/rel_cheque_date"
                 android:layout_marginLeft="@dimen/_30dip"
                 android:layout_marginTop="@dimen/_20dip"
                 android:layout_marginRight="@dimen/_30dip">
@@ -304,7 +303,7 @@
                 android:id="@+id/btn_print"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rel9"
+                android:layout_below="@+id/rel_entrega_date"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/_70dip"
                 android:background="@color/colorPrimary"

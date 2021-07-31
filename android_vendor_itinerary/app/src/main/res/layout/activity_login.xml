@@ -28,7 +28,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/_20dip"
                 android:hint="@string/usuario"
-                android:text="NRODRIGUEZ"
                 android:singleLine="true" />
 
             <EditText
@@ -39,7 +38,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/_20dip"
                 android:hint="@string/contrase_a"
-                android:text="123"
                 android:inputType="textPassword"
                 android:singleLine="true" />
 

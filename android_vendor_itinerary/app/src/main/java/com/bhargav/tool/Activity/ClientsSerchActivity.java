@@ -347,6 +347,8 @@ public class ClientsSerchActivity extends AppCompatActivity {
 
     private void callPlanningDataCliant(String search_word) {
 
+        final Dialog startdialog = new Dialog(context);
+        startdialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         Call<Clientes> call = RestClient.post().clientsDataForPlanning(search_word);
         call.enqueue(new Callback<Clientes>() {
@@ -374,17 +376,20 @@ public class ClientsSerchActivity extends AppCompatActivity {
                                                 Intent intent1 = new Intent(context, PlanningActivity.class);
                                                 startActivity(intent1);
                                                 finish();
+                                                startdialog.dismiss();
 
                                             }
                                         })
                                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 dialog.cancel();
+                                                startdialog.dismiss();
                                             }
                                         });
                                 AlertDialog alert = builder.create();
                                 alert.setTitle("Alert");
                                 alert.show();
+                                startdialog.dismiss();
                                 return;
                             }
                         }
@@ -400,16 +405,30 @@ public class ClientsSerchActivity extends AppCompatActivity {
                     startActivity(intent1);
                     finish();
 
+                    startdialog.dismiss();
+
                 } else {
                     Toast.makeText(context, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
+                    startdialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<Clientes> call, Throwable t) {
                 Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                startdialog.dismiss();
             }
         });
+
+        startdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        startdialog.setContentView(R.layout.custom_progressdialog);
+        startdialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        startdialog.setCancelable(false);
+        startdialog.setCanceledOnTouchOutside(false);
+
+        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) startdialog.findViewById(R.id.avi);
+        avi.smoothToShow();
+        startdialog.show();
 
     }
 

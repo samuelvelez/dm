@@ -26,6 +26,7 @@ import com.bhargav.tool.ModelClass.ABC;
 import com.bhargav.tool.ModelClass.Clientes;
 import com.bhargav.tool.ModelClass.ClientesUtils;
 import com.bhargav.tool.ModelClass.DetallePlanificacions;
+import com.bhargav.tool.ModelClass.Planificaciones;
 import com.bhargav.tool.ModelClass.RestClient;
 import com.bhargav.tool.R;
 import com.bhargav.tool.Utils;
@@ -47,6 +48,8 @@ public class PlanningActivity extends AppCompatActivity {
 
     ImageView btn_cliants_add;
     ArrayList<ClientesUtils> detallePlanificacionsDataSave = new ArrayList<>();
+    ArrayList<ClientesUtils> ApidetallePlanificacionsDataSave = new ArrayList<>();
+
 
     Context context = PlanningActivity.this;
     RecyclerView simpleList;
@@ -54,9 +57,6 @@ public class PlanningActivity extends AppCompatActivity {
     TextView nodataerror;
     ImageView btn_logout, btn_sync;
     public Utils shareprefrence;
-    ArrayList<ClientesUtils> detallePlanificacionsData = new ArrayList<>();
-    ArrayList<ClientesUtils> detallePlanificacionsDataNotUp = new ArrayList<>();
-    boolean susss = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,31 +121,9 @@ public class PlanningActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (Utils.isOnline(context)) {
-                    boolean uploadSucsees = false;
 
-                    if (Utils.getData(context, "UploadDetallePlanifi") != null) {
-                        Gson gson2 = new Gson();
-                        detallePlanificacionsData = gson2.fromJson(Utils.getData(context, "UploadDetallePlanifi"),
-                                new TypeToken<ArrayList<ClientesUtils>>() {
-                                }.getType());
+                    planificationApiCall();
 
-                        Toast.makeText(context, (detallePlanificacionsData.size()) + " sincronización de datos pendiente", Toast.LENGTH_SHORT).show();
-
-                        for (int position = 0; detallePlanificacionsData.size() > position; position++) {
-                            uploadSucsees = apiCallForUpdateData(position);
-
-                            if (uploadSucsees) {
-                                detallePlanificacionsDataNotUp.add(detallePlanificacionsData.get(position));
-                            }
-                        }
-                    } else {
-                        Toast.makeText(context, "No hay datos para sincronizar", Toast.LENGTH_SHORT).show();
-                    }
-
-                    Utils.saveData(context, "UploadDetallePlanifi", null);
-                    Gson gson2 = new Gson();
-                    String json = gson2.toJson(detallePlanificacionsDataNotUp);
-                    Utils.saveData(context, "UploadDetallePlanifi", json);
                 } else {
                     Toast.makeText(context, "Sin conexión a Internet", Toast.LENGTH_SHORT).show();
                 }
@@ -192,71 +170,85 @@ public class PlanningActivity extends AppCompatActivity {
 
     }
 
-    private boolean apiCallForUpdateData(int position) {
+    private void apiCallForUpdateData() {
+
+        if (Utils.getData(context, "SaveDetallePlanifi") != null) {
+
+            Gson gson33 = new Gson();
+
+            ApidetallePlanificacionsDataSave = gson33.fromJson(Utils.getData(context, "ApiSaveDetallePlanifi"),
+                    new TypeToken<ArrayList<ClientesUtils>>() {
+                    }.getType());
+
+            for (int i = 0; ApidetallePlanificacionsDataSave.size() > i; i++) {
+                ArrayList<ClientesUtils> detallePlanificacionsDataTemp = new ArrayList<>();
+                for (int j = 0; detallePlanificacionsDataSave.size() > j; j++) {
+                    if (!ApidetallePlanificacionsDataSave.get(i).getCodigo()
+                            .equals(detallePlanificacionsDataSave.get(j).getCodigo())) {
+                        detallePlanificacionsDataTemp.add(detallePlanificacionsDataSave.get(j));
+                    }
+                }
+                detallePlanificacionsDataSave = detallePlanificacionsDataTemp;
+            }
+
+            for (int i = 0; i < ApidetallePlanificacionsDataSave.size(); i++) {
+                detallePlanificacionsDataSave.add(ApidetallePlanificacionsDataSave.get(i));
+            }
+
+            Gson gson = new Gson();
+            String json = gson.toJson(detallePlanificacionsDataSave);
+            Utils.saveData(context, "SaveDetallePlanifi", json);
+
+            AdapterForList adapterForList = new AdapterForList(detallePlanificacionsDataSave);
+            gridList.setAdapter(adapterForList);
+        }
+    }
+
+    private void planificationApiCall() {
+
+        ArrayList<ClientesUtils> detallePlanificacionsDataSaveNew = new ArrayList<>();
 
         final Dialog startdialog = new Dialog(context);
         startdialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        int division_position = detallePlanificacionsData.get(position).getDivisionPosition();
-
-        Call<ABC> call = RestClient.post().registrarReciboCobroForUpload(
-                Utils.getData(context, "Personal"),
-                detallePlanificacionsData.get(position).getCodigo(),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getFormaPogoPosition()),
-                "OK",
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()),
-                String.valueOf(detallePlanificacionsData.get(position).getDivisionPosition()),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCuentaPosition()),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getDocumentNumber()),
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getInvoiceNoForUpdate(),    //hhmmss
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getDateForUpdate());  // aaj ni tarikh
-
-        call.enqueue(new Callback<ABC>() {
+        Call<Planificaciones> call = RestClient.post().planificaciones(Utils.getData(context, "Personal"));
+        call.enqueue(new Callback<Planificaciones>() {
             @Override
-            public void onResponse(Call<ABC> call, Response<ABC> response) {
-
+            public void onResponse(Call<Planificaciones> call, Response<Planificaciones> response) {
 
                 if (response.isSuccessful()) {
-                    ABC datas = response.body();
+                    Planificaciones datas = response.body();
 
                     if (datas.getMensaje().equals("OK")) {
-                        ArrayList<ClientesUtils> detallePlanificacionsDataTemp = new ArrayList<>();
 
-                        for (int i = 0; detallePlanificacionsData.size() > i; i++) {
-                            if (position != i) {
-                                detallePlanificacionsDataTemp.add(detallePlanificacionsData.get(i));
-                            }
+                        for (int i = 0; i < datas.lsDetallePlanificacions.size(); i++) {
+                            detallePlanificacionsDataSaveNew.add(datas.lsDetallePlanificacions.get(i).lsClientesUtils.get(0));
                         }
-                        detallePlanificacionsData = detallePlanificacionsDataTemp;
 
-                        susss = true;
+                        Gson gson = new Gson();
 
-                        Toast.makeText(context, "Sincronización de datos completa", Toast.LENGTH_SHORT).show();
+                        String json = gson.toJson(detallePlanificacionsDataSaveNew);
+
+                        Utils.saveData(context, "ApiSaveDetallePlanifi", json);
+
+                        apiCallForUpdateData();
+
                         startdialog.dismiss();
-
                     } else {
-                        Toast.makeText(context, datas.getError(), Toast.LENGTH_SHORT).show();
-                        susss = false;
+                        Toast.makeText(context, datas.getMensaje(), Toast.LENGTH_SHORT).show();
                         startdialog.dismiss();
-
                     }
-
                 } else {
                     Toast.makeText(context, "Something Went Wrong...", Toast.LENGTH_SHORT).show();
-                    susss = false;
                     startdialog.dismiss();
-
                 }
-
-
+                startdialog.dismiss();
             }
 
             @Override
-            public void onFailure(Call<ABC> call, Throwable t) {
-                Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
-                susss = false;
+            public void onFailure(Call<Planificaciones> call, Throwable t) {
                 startdialog.dismiss();
-
+                Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -270,8 +262,8 @@ public class PlanningActivity extends AppCompatActivity {
         avi.smoothToShow();
         startdialog.show();
 
-        return susss;
     }
+
 
     public class AdapterForList extends BaseAdapter {
 

@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,6 +70,7 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
     int division_position;
     private static final int REQUEST_EXTERNAL_STORAGe = 1;
     private static String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+    RelativeLayout rel_documento, rel_cuenta, rel_cheque_date, rel_entrega_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,14 +98,8 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
         btn_print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (et_documento.getText().toString().equals("")) {
-                    et_documento.setError("Documento Empty");
-                } else if (String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()).equals("0")) {
+                if (String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()).equals("0")) {
                     ed_total.setError("Total Empty");
-                } else if (cheque_date.getText().toString().equals("")) {
-                    cheque_date.setError("Fecha Cheque Empty");
-                } else if (entrega_date.getText().toString().equals("")) {
-                    entrega_date.setError("Fetcha Entrega Empty");
                 } else {
                     screenshot(getWindow().getDecorView().getRootView(), "result");
                 }
@@ -425,7 +421,6 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-
     private void findView() {
         btn_print = findViewById(R.id.btn_print);
         cheque_date_img = findViewById(R.id.cheque_date_img);
@@ -439,6 +434,11 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
         btn_ver_detalle = findViewById(R.id.btn_ver_detalle);
         ed_total = findViewById(R.id.ed_total);
         et_documento = findViewById(R.id.et_documento);
+        rel_documento = findViewById(R.id.rel_documento);
+        rel_cuenta = findViewById(R.id.rel_cuenta);
+        rel_cheque_date = findViewById(R.id.rel_cheque_date);
+        rel_entrega_date = findViewById(R.id.rel_entrega_date);
+
     }
 
     private void secondApiCall() {
@@ -458,6 +458,19 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onItemSelected(AdapterView<?> parentView,
                                        View selectedItemView, int positionSpin, long id) {
                 detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setFormaPogoPosition(positionSpin);
+
+                if (nombreFormaPago.get(positionSpin).equals("EFECTIVO")) {
+                    rel_documento.setVisibility(View.GONE);
+                    rel_cuenta.setVisibility(View.GONE);
+                    rel_cheque_date.setVisibility(View.GONE);
+                    rel_entrega_date.setVisibility(View.GONE);
+                } else {
+                    rel_documento.setVisibility(View.VISIBLE);
+                    rel_cuenta.setVisibility(View.VISIBLE);
+                    rel_cheque_date.setVisibility(View.VISIBLE);
+                    rel_entrega_date.setVisibility(View.VISIBLE);
+                }
+
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {// do nothing

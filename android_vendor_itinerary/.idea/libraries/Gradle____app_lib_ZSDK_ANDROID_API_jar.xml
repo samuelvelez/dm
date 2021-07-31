@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: ./app/lib/ZSDK_ANDROID_API.jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/lib/ZSDK_ANDROID_API.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

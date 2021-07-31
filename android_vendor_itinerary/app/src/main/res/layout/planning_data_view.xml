@@ -7,11 +7,11 @@
     <RelativeLayout
         android:id="@+id/go_to_form"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_50dip"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_25dip"
-        android:layout_marginTop="@dimen/_8dip"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="@dimen/_25dip"
-        android:layout_marginBottom="@dimen/_8dip">
+        android:layout_marginBottom="15dp">
 
         <TextView
             android:id="@+id/time"

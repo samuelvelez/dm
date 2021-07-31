@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-
         btn_login = findViewById(R.id.btn_login);
         et_user_name = findViewById(R.id.et_user_name);
         et_password = findViewById(R.id.et_password);
@@ -124,9 +123,6 @@ public class LoginActivity extends AppCompatActivity {
                 planificationApiCall();
 
                 shareprefrence.sharedPreferences.edit().putBoolean("id", true).apply();
-
-//                startActivity(new Intent(getApplicationContext(), PlanningActivity.class));
-//                finish();
 
                 startdialog.dismiss();
 
