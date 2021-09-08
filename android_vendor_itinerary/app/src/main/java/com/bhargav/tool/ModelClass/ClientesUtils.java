@@ -38,6 +38,24 @@ public class ClientesUtils {
     public ArrayList<ComNumerosCuentas> lsComNumerosCuentas = new ArrayList<ComNumerosCuentas>();
 
     private int divisionPosition = 0;
+    private int divisionMaster = 0;
+    private float codigoDivision;
+
+    public float getCodigoDivision() {
+        return codigoDivision;
+    }
+
+    public void setCodigoDivision(float codigoDivision) {
+        this.codigoDivision = codigoDivision;
+    }
+
+    public int getDivisionMaster() {
+        return divisionMaster;
+    }
+
+    public void setDivisionMaster(int divisionMaster) {
+        this.divisionMaster = divisionMaster;
+    }
 
     public int getDivisionPosition() {
         return divisionPosition;

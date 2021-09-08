@@ -8,18 +8,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,24 +34,37 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bhargav.tool.ModelClass.ABC;
 import com.bhargav.tool.ModelClass.Clientes;
 import com.bhargav.tool.ModelClass.ClientesUtils;
+import com.bhargav.tool.ModelClass.ClientesUtilsTemp;
+import com.bhargav.tool.ModelClass.ClientesUtilsTempFinal;
 import com.bhargav.tool.ModelClass.DetallePlanificacions;
+import com.bhargav.tool.ModelClass.Divisiones;
+import com.bhargav.tool.ModelClass.DivisionesTemp;
 import com.bhargav.tool.ModelClass.RestClient;
 import com.bhargav.tool.Printer.MainActivity;
 import com.bhargav.tool.R;
 import com.bhargav.tool.Utils;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -54,92 +74,171 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FormActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class FormActivity extends AppCompatActivity {
 
-    EditText txt_cliente, ed_total, et_documento;
+    EditText txt_cliente;
     Context context = FormActivity.this;
-    Spinner spinner_forma_pago, spinner_division, spinner_cuenta;
-    ArrayList<String> nombreFormaPago = new ArrayList<String>();
+    Spinner spinner_division;
     ArrayList<String> divisionesData = new ArrayList<String>();
-    ArrayList<String> comNumerosCuentasData = new ArrayList<String>();
-    ImageView cheque_date_img, entrega_date_img;
-    EditText cheque_date, entrega_date;
-    Button btn_ver_detalle, btn_print;
+    Button btn_print;
     ArrayList<ClientesUtils> detallePlanificacionsData = new ArrayList<>();
+    ClientesUtils tempArr;
     int position;
     int division_position;
+    String division_name;
     private static final int REQUEST_EXTERNAL_STORAGe = 1;
     private static String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-    RelativeLayout rel_documento, rel_cuenta, rel_cheque_date, rel_entrega_date;
+
+    int forma_pogo_po = 0;
+    int forma_pogo_posiiii = 0;
+    LinearLayout plate;
+    RecyclerView recyclerView, recyclerViewNew;
+    ListAdapter listAdapter;
+    ListAdapterForNewList listAdapterForNewList;
+    LinearLayoutManager llm, llmNew;
+    ImageView btn_add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
+        findView();
+
         position = Integer.parseInt(Utils.getData(context, "CUST_NO"));
 
         verifystoragepermissions(this);
-
-        findView();
 
         Gson gson = new Gson();
         detallePlanificacionsData = gson.fromJson(Utils.getData(context, "SaveDetallePlanifi"),
                 new TypeToken<ArrayList<ClientesUtils>>() {
                 }.getType());
 
-        division_position = detallePlanificacionsData.get(position).getDivisionPosition();
 
-        secondApiCall();
-        callIsclianta();
-        ComNumerosCuentas();
+        division_position = detallePlanificacionsData.get(position).getDivisionPosition();
+        division_name = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getNombreDivision();
+
         allSetText();
+        callIsclianta();
+
+        recyclerViewNew = findViewById(R.id.recycle_view_new);
+        recyclerViewNew.setNestedScrollingEnabled(false);
+
+        listAdapterForNewList = new ListAdapterForNewList(this, division_name, divisionesData.size());
+        llmNew = new LinearLayoutManager(this);
+
+        recyclerViewNew.setAdapter(listAdapterForNewList);
+        recyclerViewNew.setLayoutManager(llmNew);
+
+        recyclerView = findViewById(R.id.recycle_view);
+        recyclerView.setNestedScrollingEnabled(false);
+
+        listAdapter = new ListAdapter(this, division_name, divisionesData.size(), btn_add, listAdapterForNewList, recyclerViewNew, plate);
+        llm = new LinearLayoutManager(this);
+
+        recyclerView.setAdapter(listAdapter);
+        recyclerView.setLayoutManager(llm);
 
         btn_print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()).equals("0")) {
-                    ed_total.setError("Total Empty");
-                } else {
-                    screenshot(getWindow().getDecorView().getRootView(), "result");
-                }
+                apiJsonCreate();
             }
         });
     }
 
-    private void ComNumerosCuentas() {
-        for (int j = 0; detallePlanificacionsData.get(position).lsComNumerosCuentas.size() > j; j++) {
-            comNumerosCuentasData.add(detallePlanificacionsData.get(position).lsComNumerosCuentas.get(j).getNumeroCuenta());
+    private void apiJsonCreate() {
+        ClientesUtils temp = null;
+
+        ClientesUtilsTemp temp_2;
+        tempArr = temp;
+        tempArr = detallePlanificacionsData.get(position);
+
+        Gson gson2 = new Gson();
+        String json = gson2.toJson(tempArr);
+
+        Gson gson = new Gson();
+        temp_2 = gson.fromJson(json,
+                new TypeToken<ClientesUtilsTemp>() {
+                }.getType());
+
+        temp_2.setCodigoCliente(Integer.parseInt(tempArr.getCodigo()));
+        temp_2.setCodigoFormaPago(Integer.parseInt(temp_2.lsDivisiones.get(0).getCodigoFormaPago()));
+
+        temp_2.setSecuencialPersonal(Integer.parseInt(Utils.getData(context, "Personal")));
+
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String currentDate = sdf2.format(new Date());
+        temp_2.setFechaReciboCobro(currentDate);
+
+        if (Utils.getData(context, "INVOICENO") == null) {
+            Utils.saveData(context, "INVOICENO", "1");
+        }
+        temp_2.setInvoce_No(Utils.getData(context, "USERNAME")
+                + " " + Utils.getData(context, "INVOICENO"));
+        Utils.saveData(context, "INVOICENO", String.valueOf(Integer.parseInt(Utils.getData(context, "INVOICENO")) + 1));
+        temp_2.setCodigoDivision(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCodigoDivision());
+
+        ClientesUtilsTemp temp_3 = temp_2;
+
+        for (int i = temp_2.lsDivisiones.size() - 1; i >= 0; i--) {
+            if (temp_2.lsDivisiones.get(i).getCodigoDivision()
+                    != temp_2.getCodigoDivision()) {
+                temp_3.lsDivisiones.remove(i);
+            }
         }
 
+        for (int i = 0; i < temp_3.lsDivisiones.size(); i++) {
+            temp_3.setTotalAbonado(temp_3.getTotalAbonado() +
+                    temp_3.lsDivisiones.get(i).getValor());
+        }
 
-        ArrayAdapter ad = new ArrayAdapter(context, android.R.layout.simple_spinner_item, comNumerosCuentasData);
-        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_cuenta.setAdapter(ad);
-
-        spinner_cuenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parentView,
-                                       View selectedItemView, int positionSpin, long id) {
-                detallePlanificacionsData.get(position)
-                        .lsDivisiones.get(division_position)
-                        .setCuentaPosition(positionSpin);
+        for (int i = 0; temp_3.lsDivisiones.size() > i; i++) {
+            for (int j = temp_3.lsDivisiones.get(i).lsFacturasXCobrar.size() - 1; j >= 0; j--) {
+                if (temp_3.lsDivisiones.get(i)
+                        .lsFacturasXCobrar.get(j).getIsChecked() == 0) {
+                    temp_3.lsDivisiones.get(i).lsFacturasXCobrar.remove(j);
+                }
             }
+        }
 
-            public void onNothingSelected(AdapterView<?> arg0) {// do nothing
-            }
+        Gson gson3 = new Gson();
+        String json3 = gson3.toJson(temp_3);
 
-        });
-        spinner_cuenta.setSelection(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCuentaPosition());
+        json3 = json3.replace("\"lsDivisiones\":", "\"lsPagoReciboCobros\":");
+        json3 = json3.replace("\"secuencialPersonal\":", "\"secuenciaPersonal\":");
+        json3 = json3.replace("\"lsFacturasXCobrar\":", "\"lsCobXSecComps\":");
+        json3 = json3.replace("\"codigoDivision\":", "\"codigoDivisiones\":");
 
+        Gson gsonFinal = new Gson();
+        ClientesUtilsTempFinal tempFinal = gsonFinal.fromJson(json3,
+                new TypeToken<ClientesUtilsTempFinal>() {
+                }.getType());
+        String jsonFinal = gsonFinal.toJson(tempFinal);
 
+        Utils.saveData(context, "UploadTemp", jsonFinal);
+        System.out.println("Call Api Body : " + jsonFinal);
+
+        screenshot();
     }
 
+    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
+        ArrayList<T> newList = new ArrayList<T>();
+        for (T element : list) {
+            if (!newList.contains(element)) {
+                newList.add(element);
+            }
+        }
+        return newList;
+    }
 
     private void callIsclianta() {
+
         for (int j = 0; detallePlanificacionsData.get(position).lsDivisiones.size() > j; j++) {
             divisionesData.add(detallePlanificacionsData.get(position).lsDivisiones.get(j).getNombreDivision());
         }
 
+        divisionesData = removeDuplicates(divisionesData);
 
         ArrayAdapter ad = new ArrayAdapter(context, android.R.layout.simple_spinner_item, divisionesData);
         ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -149,6 +248,7 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onItemSelected(AdapterView<?> parentView,
                                        View selectedItemView, int positionSpinnnn, long id) {
                 detallePlanificacionsData.get(position).setDivisionPosition(positionSpinnnn);
+                detallePlanificacionsData.get(position).setDivisionMaster(positionSpinnnn);
 
                 if (positionSpinnnn != division_position) {
                     Intent intent = new Intent(context, FormActivity.class);
@@ -157,10 +257,11 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
 
-            public void onNothingSelected(AdapterView<?> arg0) {// do nothing
+            public void onNothingSelected(AdapterView<?> arg0) {
             }
+
         });
-        spinner_division.setSelection(detallePlanificacionsData.get(position).getDivisionPosition());
+        spinner_division.setSelection(detallePlanificacionsData.get(position).getDivisionMaster());
 
 
     }
@@ -172,6 +273,7 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
         Gson gson2 = new Gson();
         String json = gson2.toJson(detallePlanificacionsData);
         Utils.saveData(context, "SaveDetallePlanifi", json);
+        Utils.saveData(context, "forma_pogo_po", "0");
     }
 
 
@@ -180,118 +282,29 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
         txt_cliente.setEnabled(false);
         txt_cliente.setText(detallePlanificacionsData.get(position).getNombres());
 
-        cheque_date.setEnabled(false);
-        cheque_date.setText(detallePlanificacionsData.get(position)
-                .lsDivisiones.get(division_position).getFechaCheque());
-
-        entrega_date.setEnabled(false);
-        entrega_date.setText(detallePlanificacionsData.get(position)
-                .lsDivisiones.get(division_position).getFechaEntrega());
-
-        ed_total.setEnabled(false);
-        ed_total.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()));
-
-        String document_no = String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getDocumentNumber());
-        if (document_no.equals("0")) {
-            et_documento.setText("");
-        } else {
-            et_documento.setText(document_no);
-        }
-
-        cheque_date_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final Calendar cldr = Calendar.getInstance();
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
-
-                DatePickerDialog datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        Calendar fromCal = Calendar.getInstance();
-                        fromCal.setTimeInMillis(0);
-                        fromCal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        String dateString = dateFormat.format(fromCal.getTime());
-                        cheque_date.setText(dateString);
-                        detallePlanificacionsData.get(position)
-                                .lsDivisiones.get(division_position).setFechaCheque(dateString);
-
-                    }
-                }, year, month, day);
-                datepicker.show();
-
-            }
-        });
-
-        btn_ver_detalle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (et_documento.getText().toString().equals("")) {
-                    et_documento.setText("");
-                } else {
-                    detallePlanificacionsData.get(position).lsDivisiones.get(division_position)
-                            .setDocumentNumber(Integer.parseInt(et_documento.getText().toString()));
-                }
-
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position)
-                        .setBillTotal(Integer.parseInt(ed_total.getText().toString()));
-
-                Intent intent = new Intent(context, VerDetalleActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        entrega_date_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final Calendar cldr = Calendar.getInstance();
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
-
-                DatePickerDialog datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        Calendar fromCal = Calendar.getInstance();
-                        fromCal.setTimeInMillis(0);
-                        fromCal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        String dateString = dateFormat.format(fromCal.getTime());
-                        entrega_date.setText(dateString);
-                        detallePlanificacionsData.get(position)
-                                .lsDivisiones.get(division_position).setFechaEntrega(dateString);
-                    }
-                }, year, month, day);
-                datepicker.show();
-
-            }
-        });
     }
 
-    protected File screenshot(View view, String filename) {
+    public Bitmap takeScreenshot() {
+        ScrollView iv = (ScrollView) findViewById(R.id.scrollView);
+        Bitmap bitmap = Bitmap.createBitmap(
+                iv.getChildAt(0).getWidth(),
+                iv.getChildAt(0).getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bitmap);
+        iv.getChildAt(0).draw(c);
+        return bitmap;
+    }
+
+    protected File screenshot() {
         Date date = new Date();
 
-        // Here we are initialising the format of our image name
         CharSequence format = android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", date);
         try {
-            // Initialising the directory of storage
             String dirpath = Environment.getExternalStorageDirectory() + "";
-            File file = new File(dirpath);
-            if (!file.exists()) {
-                boolean mkdir = file.mkdir();
-            }
+            String path = dirpath + "/result-" + format + ".jpeg";
 
-            // File name
-            String path = dirpath + "/" + filename + "-" + format + ".jpeg";
-            view.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
-            view.setDrawingCacheEnabled(false);
+            Bitmap bitmap = takeScreenshot();
+
             File imageurl = new File(path);
             FileOutputStream outputStream = new FileOutputStream(imageurl);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
@@ -299,7 +312,6 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
             outputStream.close();
 
             Utils.saveData(FormActivity.this, "PRINT_URL", String.valueOf(imageurl));
-
             uploadData();
 
             return imageurl;
@@ -313,36 +325,17 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void uploadData() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HHmmss", Locale.getDefault());
-        String currentTime = sdf.format(new Date());
-        detallePlanificacionsData.get(position)
-                .lsDivisiones.get(division_position).setInvoiceNoForUpdate(currentTime);
-
-        SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String currentDate = sdf2.format(new Date());
-        detallePlanificacionsData.get(position)
-                .lsDivisiones.get(division_position).setDateForUpdate(currentDate);
-
-        if (et_documento.getText().toString().equals("")) {
-            et_documento.setText("");
-        } else {
-            detallePlanificacionsData.get(position).lsDivisiones.get(division_position)
-                    .setDocumentNumber(Integer.parseInt(et_documento.getText().toString()));
-        }
-
-        detallePlanificacionsData.get(position).lsDivisiones.get(division_position)
-                .setBillTotal(Integer.parseInt(ed_total.getText().toString()));
 
         if (Utils.isOnline(context)) {
             apiCallForUpdateData();
         } else {
             ArrayList<ClientesUtils> detallePlanificacionsDataTemp = new ArrayList<>();
-            ArrayList<ClientesUtils> detallePlanificacionsDataTempUpload = new ArrayList<>();
+            ArrayList<ClientesUtilsTempFinal> detallePlanificacionsDataTempUpload = new ArrayList<>();
 
             if (Utils.getData(context, "UploadDetallePlanifi") != null) {
                 Gson gson = new Gson();
                 detallePlanificacionsDataTempUpload = gson.fromJson(Utils.getData(context, "UploadDetallePlanifi"),
-                        new TypeToken<ArrayList<ClientesUtils>>() {
+                        new TypeToken<ArrayList<ClientesUtilsTempFinal>>() {
                         }.getType());
             }
 
@@ -350,7 +343,14 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (position != i) {
                     detallePlanificacionsDataTemp.add(detallePlanificacionsData.get(i));
                 } else {
-                    detallePlanificacionsDataTempUpload.add(detallePlanificacionsData.get(i));
+
+                    Gson gson = new Gson();
+                    ClientesUtilsTempFinal tempData = gson.fromJson(Utils.getData(context, "UploadTemp"),
+                            new TypeToken<ClientesUtilsTempFinal>() {
+                            }.getType());
+                    Utils.saveData(context, "UploadTemp", "");
+
+                    detallePlanificacionsDataTempUpload.add(tempData);
 
                     Gson gson3 = new Gson();
                     String json3 = gson3.toJson(detallePlanificacionsDataTempUpload);
@@ -369,22 +369,13 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void apiCallForUpdateData() {
 
-        Call<ABC> call = RestClient.post().registrarReciboCobroForUpload(
-                Utils.getData(context, "Personal"),
-                detallePlanificacionsData.get(position).getCodigo(),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getFormaPogoPosition()),
-                "OK",
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()),
-                String.valueOf(detallePlanificacionsData.get(position).getDivisionPosition()),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCuentaPosition()),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getDocumentNumber()),
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getInvoiceNoForUpdate(),    //hhmmss
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getDateForUpdate());  // aaj ni tarikh
+        JsonObject convertedObject = new JsonParser().parse(Utils.getData(context, "UploadTemp")).getAsJsonObject();
+
+        Call<ABC> call = RestClient.post().registrarReciboCobroForUpload(convertedObject);
 
         call.enqueue(new Callback<ABC>() {
             @Override
             public void onResponse(Call<ABC> call, Response<ABC> response) {
-
 
                 if (response.isSuccessful()) {
                     ABC datas = response.body();
@@ -403,7 +394,7 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(context, datas.getError(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, datas.getErrorSistemas(), Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
@@ -420,92 +411,23 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
-
     private void findView() {
         btn_print = findViewById(R.id.btn_print);
-        cheque_date_img = findViewById(R.id.cheque_date_img);
         txt_cliente = findViewById(R.id.txt_cliente);
-        spinner_forma_pago = findViewById(R.id.spinner_forma_pago);
         spinner_division = findViewById(R.id.spinner_division);
-        spinner_cuenta = findViewById(R.id.spinner_cuenta);
-        cheque_date = findViewById(R.id.cheque_date);
-        entrega_date = findViewById(R.id.entrega_date);
-        entrega_date_img = findViewById(R.id.entrega_date_img);
-        btn_ver_detalle = findViewById(R.id.btn_ver_detalle);
-        ed_total = findViewById(R.id.ed_total);
-        et_documento = findViewById(R.id.et_documento);
-        rel_documento = findViewById(R.id.rel_documento);
-        rel_cuenta = findViewById(R.id.rel_cuenta);
-        rel_cheque_date = findViewById(R.id.rel_cheque_date);
-        rel_entrega_date = findViewById(R.id.rel_entrega_date);
-
-    }
-
-    private void secondApiCall() {
-
-        Gson gson = new Gson();
-        nombreFormaPago = gson.fromJson(Utils.getData(context, "FormaPogo"),
-                new TypeToken<ArrayList<String>>() {
-                }.getType());
-
-        spinner_forma_pago.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) context);
-
-        ArrayAdapter ad = new ArrayAdapter(context, android.R.layout.simple_spinner_item, nombreFormaPago);
-        ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_forma_pago.setAdapter(ad);
-
-        spinner_forma_pago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parentView,
-                                       View selectedItemView, int positionSpin, long id) {
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setFormaPogoPosition(positionSpin);
-
-                if (nombreFormaPago.get(positionSpin).equals("EFECTIVO")) {
-                    rel_documento.setVisibility(View.GONE);
-                    rel_cuenta.setVisibility(View.GONE);
-                    rel_cheque_date.setVisibility(View.GONE);
-                    rel_entrega_date.setVisibility(View.GONE);
-                } else {
-                    rel_documento.setVisibility(View.VISIBLE);
-                    rel_cuenta.setVisibility(View.VISIBLE);
-                    rel_cheque_date.setVisibility(View.VISIBLE);
-                    rel_entrega_date.setVisibility(View.VISIBLE);
-                }
-
-            }
-
-            public void onNothingSelected(AdapterView<?> arg0) {// do nothing
-            }
-        });
-        spinner_forma_pago.setSelection(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getFormaPogoPosition());
-
+        btn_add = findViewById(R.id.btn_add);
+        plate = findViewById(R.id.plate);
     }
 
 
     @Override
     public void onBackPressed() {
-        if (et_documento.getText().toString().equals("")) {
-            et_documento.setText("");
-        } else {
-            detallePlanificacionsData.get(position).lsDivisiones.get(division_position)
-                    .setDocumentNumber(Integer.parseInt(et_documento.getText().toString()));
-        }
 
-        detallePlanificacionsData.get(position).lsDivisiones.get(division_position)
-                .setBillTotal(Integer.parseInt(ed_total.getText().toString()));
         Intent intent = new Intent(FormActivity.this, PlanningActivity.class);
         startActivity(intent);
         finish();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int positionSpinner, long id) {
-//        Toast.makeText(getApplicationContext(), nombreFormaPago[positionSpinner], Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 
     public static void verifystoragepermissions(Activity activity) {
 
@@ -516,4 +438,405 @@ public class FormActivity extends AppCompatActivity implements AdapterView.OnIte
             ActivityCompat.requestPermissions(activity, permissionstorage, REQUEST_EXTERNAL_STORAGe);
         }
     }
+
+    public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+
+        Context context;
+        String division_name;
+        ArrayList<String> nombreFormaPago = new ArrayList<String>();
+        ArrayList<String> comNumerosCuentasData = new ArrayList<String>();
+        int firt_ele;
+        ImageView add;
+        ListAdapterForNewList listAdapterForNewList;
+        RecyclerView recyclerViewNew;
+        LinearLayout plate;
+
+        public ListAdapter(
+                Context context,
+                String division_name,
+                int firt_ele,
+                ImageView btn_add,
+                ListAdapterForNewList listAdapterForNewList,
+                RecyclerView recyclerViewNew,
+                LinearLayout plate) {
+            this.context = context;
+            this.division_name = division_name;
+            this.firt_ele = firt_ele;
+            this.add = btn_add;
+            this.listAdapterForNewList = listAdapterForNewList;
+            this.recyclerViewNew = recyclerViewNew;
+            this.plate = plate;
+        }
+
+        @Override
+        public int getItemCount() {
+            return detallePlanificacionsData.get(position).lsDivisiones.size();
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.form_list, viewGroup, false);
+            return new ViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int i) {
+
+            if (i < firt_ele) {
+                holder.remove.setVisibility(View.GONE);
+                holder.rel_forma_pogo.setVisibility(View.VISIBLE);
+            } else {
+                holder.rel_forma_pogo.setVisibility(View.GONE);
+            }
+
+            if (!detallePlanificacionsData.get(position).lsDivisiones.get(i).getNombreDivision().equals(division_name)) {
+                holder.rel_box.setVisibility(View.GONE);
+            } else {
+                if (forma_pogo_po == 0) {
+                    forma_pogo_posiiii = i;
+                }
+                forma_pogo_po++;
+            }
+
+            holder.spinner_forma_pago.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (forma_pogo_po > 1) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setTitle("ERROR !!");
+                        builder.setMessage("Eliminar todos los elementos primero");
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            holder.cheque_date.setEnabled(false);
+            holder.cheque_date.setText(detallePlanificacionsData.get(position)
+                    .lsDivisiones.get(i).getFechaCheque());
+
+            holder.entrega_date.setEnabled(false);
+            holder.entrega_date.setText(detallePlanificacionsData.get(position)
+                    .lsDivisiones.get(i).getFechaEntrega());
+
+            holder.ed_total.setEnabled(false);
+            holder.ed_total.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor()));
+
+            holder.cheque_date_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    final Calendar cldr = Calendar.getInstance();
+                    int day = cldr.get(Calendar.DAY_OF_MONTH);
+                    int month = cldr.get(Calendar.MONTH);
+                    int year = cldr.get(Calendar.YEAR);
+
+                    DatePickerDialog datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            Calendar fromCal = Calendar.getInstance();
+                            fromCal.setTimeInMillis(0);
+                            fromCal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            String dateString = dateFormat.format(fromCal.getTime());
+                            holder.cheque_date.setText(dateString);
+                            detallePlanificacionsData.get(position)
+                                    .lsDivisiones.get(i).setFechaCheque(dateString);
+                            listAdapterForNewList.notifyDataSetChanged();
+                        }
+                    }, year, month, day);
+                    datepicker.show();
+                }
+            });
+
+            holder.btn_ver_detalle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (holder.et_documento.getText().toString().equals("")) {
+                        holder.et_documento.setText("0");
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setNumeroTransaccion(0);
+                    } else {
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setNumeroTransaccion(Integer.parseInt(holder.et_documento.getText().toString()));
+                    }
+
+                    detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                            .setValor(Integer.parseInt(holder.ed_total.getText().toString()));
+
+                    detallePlanificacionsData.get(position).setDivisionPosition(i);
+                    listAdapterForNewList.notifyDataSetChanged();
+
+                    Intent intent = new Intent(context, VerDetalleActivity.class);
+                    context.startActivity(intent);
+                    ((Activity) context).finish();
+                }
+            });
+
+            String document_no = String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getNumeroTransaccion());
+            if (document_no.equals(null)) {
+                holder.et_documento.setText("");
+            } else {
+                holder.et_documento.setText(document_no);
+            }
+
+            holder.et_documento.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    listAdapterForNewList.notifyDataSetChanged();
+
+                    if (String.valueOf(holder.et_documento.getText()).equals("")) {
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setNumeroTransaccion(0);
+                    } else {
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setNumeroTransaccion(Integer.parseInt(holder.et_documento.getText().toString()));
+                    }
+                }
+            });
+
+            holder.entrega_date_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    final Calendar cldr = Calendar.getInstance();
+                    int day = cldr.get(Calendar.DAY_OF_MONTH);
+                    int month = cldr.get(Calendar.MONTH);
+                    int year = cldr.get(Calendar.YEAR);
+
+                    DatePickerDialog datepicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            Calendar fromCal = Calendar.getInstance();
+                            fromCal.setTimeInMillis(0);
+                            fromCal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            String dateString = dateFormat.format(fromCal.getTime());
+                            holder.entrega_date.setText(dateString);
+                            detallePlanificacionsData.get(position)
+                                    .lsDivisiones.get(i).setFechaEntrega(dateString);
+                            listAdapterForNewList.notifyDataSetChanged();
+                        }
+                    }, year, month, day);
+                    datepicker.show();
+                }
+            });
+
+            Gson gson = new Gson();
+            nombreFormaPago = gson.fromJson(Utils.getData(context, "FormaPogo"),
+                    new TypeToken<ArrayList<String>>() {
+                    }.getType());
+
+            ArrayAdapter ad = new ArrayAdapter(context, android.R.layout.simple_spinner_item, nombreFormaPago);
+            ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            holder.spinner_forma_pago.setAdapter(ad);
+
+
+            holder.spinner_forma_pago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parentView,
+                                           View selectedItemView, int positionSpin, long id) {
+
+                    detallePlanificacionsData.get(position).lsDivisiones.get(i).setFormaPogoPosition(positionSpin);
+                    ArrayList<Float> codigoFormaPago = new ArrayList<Float>();
+                    Gson gson = new Gson();
+                    codigoFormaPago = gson.fromJson(Utils.getData(context, "codigoFormaPago"),
+                            new TypeToken<ArrayList<Float>>() {
+                            }.getType());
+
+                    detallePlanificacionsData.get(position).lsDivisiones.get(i).setCodigoFormaPago(Math.round(codigoFormaPago.get(positionSpin)));
+
+                    if (nombreFormaPago.get(positionSpin).equals("EFECTIVO")) {
+                        holder.rel_documento.setVisibility(View.GONE);
+                        holder.rel_cuenta.setVisibility(View.GONE);
+                        holder.rel_cheque_date.setVisibility(View.GONE);
+                        holder.rel_entrega_date.setVisibility(View.GONE);
+                        btn_add.setVisibility(View.GONE);
+                        recyclerViewNew.setVisibility(View.GONE);
+                        plate.setVisibility(View.GONE);
+                    } else {
+                        holder.rel_documento.setVisibility(View.VISIBLE);
+                        holder.rel_cuenta.setVisibility(View.VISIBLE);
+                        holder.rel_cheque_date.setVisibility(View.VISIBLE);
+                        holder.rel_entrega_date.setVisibility(View.VISIBLE);
+                        btn_add.setVisibility(View.VISIBLE);
+                        recyclerViewNew.setVisibility(View.VISIBLE);
+                        plate.setVisibility(View.VISIBLE);
+                    }
+
+                    listAdapterForNewList.notifyDataSetChanged();
+
+                }
+
+                public void onNothingSelected(AdapterView<?> arg0) {// do nothing
+                }
+            });
+            holder.spinner_forma_pago.setSelection(detallePlanificacionsData.get(position).lsDivisiones.get(i).getFormaPogoPosition());
+
+
+            for (int j = 0; detallePlanificacionsData.get(position).lsComNumerosCuentas.size() > j; j++) {
+                comNumerosCuentasData.add(detallePlanificacionsData.get(position).lsComNumerosCuentas.get(j).getNumeroCuenta());
+            }
+
+            ArrayAdapter ad2 = new ArrayAdapter(context, android.R.layout.simple_spinner_item, comNumerosCuentasData);
+            ad2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            holder.spinner_cuenta.setAdapter(ad2);
+
+            holder.spinner_cuenta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> parentView,
+                                           View selectedItemView, int positionSpin, long id) {
+                    detallePlanificacionsData.get(position)
+                            .lsDivisiones.get(i)
+                            .setCuentaPosition(positionSpin);
+                    detallePlanificacionsData.get(position)
+                            .lsDivisiones.get(i)
+                            .setCodigoNumeroCuenta(Integer.parseInt(comNumerosCuentasData.get(positionSpin)));
+                    listAdapterForNewList.notifyDataSetChanged();
+                }
+
+                public void onNothingSelected(AdapterView<?> arg0) {// do nothing
+                }
+
+            });
+            holder.spinner_cuenta.setSelection(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCuentaPosition());
+
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            ImageView remove, cheque_date_img, entrega_date_img;
+            EditText cheque_date, entrega_date, ed_total, et_documento;
+            Button btn_ver_detalle;
+            RelativeLayout rel_documento, rel_cuenta, rel_cheque_date, rel_entrega_date, rel_box, rel_forma_pogo;
+            Spinner spinner_forma_pago, spinner_cuenta;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                remove = itemView.findViewById(R.id.btn_remove);
+                cheque_date = itemView.findViewById(R.id.cheque_date);
+                entrega_date = itemView.findViewById(R.id.entrega_date);
+                ed_total = itemView.findViewById(R.id.ed_total);
+                cheque_date_img = itemView.findViewById(R.id.cheque_date_img);
+                btn_ver_detalle = itemView.findViewById(R.id.btn_ver_detalle);
+                et_documento = itemView.findViewById(R.id.et_documento);
+                entrega_date_img = itemView.findViewById(R.id.entrega_date_img);
+                rel_documento = itemView.findViewById(R.id.rel_documento);
+                rel_cuenta = itemView.findViewById(R.id.rel_cuenta);
+                rel_cheque_date = itemView.findViewById(R.id.rel_cheque_date);
+                rel_entrega_date = itemView.findViewById(R.id.rel_entrega_date);
+                spinner_forma_pago = itemView.findViewById(R.id.spinner_forma_pago);
+                spinner_cuenta = itemView.findViewById(R.id.spinner_cuenta);
+                rel_box = itemView.findViewById(R.id.rel_box);
+                rel_forma_pogo = itemView.findViewById(R.id.rel_forma_pogo);
+
+                remove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int _position = getAdapterPosition();
+                        try {
+                            detallePlanificacionsData.get(position).lsDivisiones.remove(_position);
+                            notifyDataSetChanged();
+                            listAdapterForNewList.notifyDataSetChanged();
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                add.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int _position = getAdapterPosition();
+                        try {
+                            detallePlanificacionsData.get(position)
+                                    .lsDivisiones.add(detallePlanificacionsData.get(position)
+                                    .lsDivisiones.get(division_position));
+                            notifyDataSetChanged();
+                            listAdapterForNewList.notifyDataSetChanged();
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    public class ListAdapterForNewList extends RecyclerView.Adapter<ListAdapterForNewList.ViewHolder> {
+
+        Context context;
+        String division_name;
+        int firt_ele;
+
+        public ListAdapterForNewList(
+                Context context,
+                String division_name,
+                int firt_ele) {
+            this.context = context;
+            this.division_name = division_name;
+            this.firt_ele = firt_ele;
+        }
+
+        @Override
+        public int getItemCount() {
+            return detallePlanificacionsData.get(position).lsDivisiones.size();
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.new_form_list, viewGroup, false);
+            return new ViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int i) {
+
+            if (!detallePlanificacionsData.get(position).lsDivisiones.get(i).getNombreDivision().equals(division_name)) {
+                holder.plate.setVisibility(View.GONE);
+            }
+
+            holder.tv_cantidad.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCantidad()));
+            String document_no = String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getNumeroTransaccion());
+            if (document_no.equals("0")) {
+                holder.tv_documento.setText("");
+            } else {
+                holder.tv_documento.setText(document_no);
+            }
+            holder.tv_total.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor()));
+
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tv_cantidad, tv_documento, tv_total;
+            LinearLayout plate;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                tv_cantidad = itemView.findViewById(R.id.tv_cantidad);
+                tv_documento = itemView.findViewById(R.id.tv_documento);
+                tv_total = itemView.findViewById(R.id.tv_total);
+                plate = itemView.findViewById(R.id.plate);
+
+            }
+        }
+
+
+    }
+
+
 }

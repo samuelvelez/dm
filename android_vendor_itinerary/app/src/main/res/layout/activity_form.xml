@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_50dip"
+            android:background="@android:color/white">
 
             <RelativeLayout
                 android:id="@+id/rel1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_50dip"
                 android:layout_marginRight="@dimen/_30dip">
 
                 <TextView
@@ -81,231 +84,100 @@
                 android:layout_marginTop="@dimen/_10dip"
                 android:background="@android:color/black" />
 
-            <RelativeLayout
-                android:id="@+id/rel4"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rel3"
-                android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_20dip"
-                android:layout_marginRight="@dimen/_30dip">
+                android:layout_below="@+id/rel3" />
 
-                <TextView
-                    android:id="@+id/txt_4"
-                    android:layout_width="@dimen/_100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/forma_pago"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
+            <ImageView
+                android:id="@+id/btn_add"
+                android:layout_width="@dimen/_50dip"
+                android:layout_height="@dimen/_50dip"
+                android:layout_below="@+id/recycle_view"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/add" />
+
+            <LinearLayout
+                android:id="@+id/plate"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30dip"
+                android:layout_below="@+id/btn_add"
+                android:layout_marginLeft="@dimen/_10dip"
+                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginRight="@dimen/_10dip">
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/_50dip"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/txt_4"
-                    android:layout_toRightOf="@+id/txt_4"
-                    android:background="@drawable/boarder_for_spinner">
+                    android:layout_weight="0.2"
+                    android:background="@drawable/boarder_squer">
 
-                    <Spinner
-                        android:id="@+id/spinner_forma_pago"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
+                    <TextView
+                        android:id="@+id/tv_documento"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/documento"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sip" />
                 </RelativeLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rel_documento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rel4"
-                android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_20dip"
-                android:layout_marginRight="@dimen/_30dip">
-
-                <TextView
-                    android:id="@+id/txt_5"
-                    android:layout_width="@dimen/_100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/documento"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
-
-                <EditText
-                    android:id="@+id/et_documento"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/txt_5"
-                    android:layout_toRightOf="@+id/txt_5"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rel_cuenta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rel_documento"
-                android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_20dip"
-                android:layout_marginRight="@dimen/_30dip">
-
-                <TextView
-                    android:id="@+id/txt_6"
-                    android:layout_width="@dimen/_100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/cuenta"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
 
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/_50dip"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/txt_6"
-                    android:layout_toRightOf="@+id/txt_6"
-                    android:background="@drawable/boarder_for_spinner">
+                    android:layout_marginLeft="-1dp"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/boarder_squer">
 
-                    <Spinner
-                        android:id="@+id/spinner_cuenta"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/tv_cantidad"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/cantidad"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sip" />
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-1dp"
+                    android:layout_weight="0.2"
+                    android:background="@drawable/boarder_squer">
 
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/tv_total"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/total"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sip" />
 
-            <RelativeLayout
-                android:id="@+id/rel7"
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle_view_new"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rel_cuenta"
-                android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_20dip"
-                android:layout_marginRight="@dimen/_30dip">
-
-                <TextView
-                    android:id="@+id/txt_7"
-                    android:layout_width="@dimen/_100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/total"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
-
-                <EditText
-                    android:id="@+id/ed_total"
-                    android:layout_width="@dimen/_100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/txt_7"
-                    android:layout_toRightOf="@+id/txt_7"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
-
-                <Button
-                    android:id="@+id/btn_ver_detalle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_10dip"
-                    android:layout_marginLeft="@dimen/_10dip"
-                    android:layout_toEndOf="@+id/ed_total"
-                    android:layout_toRightOf="@+id/ed_total"
-                    android:background="@color/colorPrimary"
-                    android:text="@string/ver_detalle"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rel_cheque_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rel7"
-                android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_20dip"
-                android:layout_marginRight="@dimen/_30dip">
-
-                <TextView
-                    android:id="@+id/txt_8"
-                    android:layout_width="@dimen/_100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/fecha_cheque"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
-
-                <EditText
-                    android:id="@+id/cheque_date"
-                    android:layout_width="@dimen/_150dip"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/txt_8"
-                    android:layout_toRightOf="@+id/txt_8"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
-
-                <ImageView
-                    android:id="@+id/cheque_date_img"
-                    android:layout_width="@dimen/_35dip"
-                    android:layout_height="@dimen/_35dip"
-                    android:layout_marginStart="@dimen/_5dip"
-                    android:layout_marginLeft="@dimen/_5dip"
-                    android:layout_toEndOf="@+id/cheque_date"
-                    android:layout_toRightOf="@+id/cheque_date"
-                    android:src="@drawable/ic_calendar"
-                    android:text="@string/ver_detalle" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rel_entrega_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rel_cheque_date"
-                android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_20dip"
-                android:layout_marginRight="@dimen/_30dip">
-
-                <TextView
-                    android:id="@+id/txt_9"
-                    android:layout_width="@dimen/_100dip"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/fecha_entrega"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
-
-                <EditText
-                    android:id="@+id/entrega_date"
-                    android:layout_width="@dimen/_150dip"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/txt_9"
-                    android:layout_toRightOf="@+id/txt_9"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_15sip" />
-
-                <ImageView
-                    android:id="@+id/entrega_date_img"
-                    android:layout_width="@dimen/_35dip"
-                    android:layout_height="@dimen/_35dip"
-                    android:layout_marginStart="@dimen/_5dip"
-                    android:layout_marginLeft="@dimen/_5dip"
-                    android:layout_toEndOf="@+id/entrega_date"
-                    android:layout_toRightOf="@+id/entrega_date"
-                    android:src="@drawable/ic_calendar"
-                    android:text="@string/ver_detalle" />
-            </RelativeLayout>
+                android:layout_below="@+id/plate" />
 
             <Button
                 android:id="@+id/btn_print"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rel_entrega_date"
+                android:layout_below="@+id/recycle_view_new"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/_70dip"
+                android:layout_marginBottom="@dimen/_70dip"
                 android:background="@color/colorPrimary"
                 android:paddingLeft="@dimen/_10dip"
                 android:paddingRight="@dimen/_10dip"

@@ -27,13 +27,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_10dip"
             android:layout_marginLeft="@dimen/_10dip"
+            android:layout_toEndOf="@+id/time"
             android:layout_toRightOf="@+id/time"
             android:text="@string/pqr"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:layout_marginStart="@dimen/_10dip"
-            android:layout_toEndOf="@+id/time" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

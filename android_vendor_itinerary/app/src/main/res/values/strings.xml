@@ -70,4 +70,5 @@
     <string name="factura">Factura</string>
     <string name="saldo">Saldo</string>
     <string name="valor">Valor</string>
+    <string name="cantidad">cantidad</string>
 </resources>

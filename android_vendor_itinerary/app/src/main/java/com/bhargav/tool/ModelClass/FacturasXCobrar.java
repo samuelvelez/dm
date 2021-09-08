@@ -34,7 +34,7 @@ public class FacturasXCobrar {
     private float valorXCobrar;
     @SerializedName("secuenciaComprobante")
     @Expose
-    private String secuenciaComprobante;
+    private int secuenciaComprobante;
     @SerializedName("numeroIdentificacionCliente")
     @Expose
     private String numeroIdentificacionCliente;
@@ -53,7 +53,7 @@ public class FacturasXCobrar {
 
     private int isChecked = 0;
 
-    private String valor = "0";
+    private int valor = 0;
 
     public int getIsChecked() {
         return isChecked;
@@ -63,11 +63,11 @@ public class FacturasXCobrar {
         this.isChecked = isChecked;
     }
 
-    public String getValor() {
+    public int getValor() {
         return valor;
     }
 
-    public void setValor(String valor) {
+    public void setValor(int valor) {
         this.valor = valor;
     }
 
@@ -109,7 +109,7 @@ public class FacturasXCobrar {
         return valorXCobrar;
     }
 
-    public String getSecuenciaComprobante() {
+    public int getSecuenciaComprobante() {
         return secuenciaComprobante;
     }
 
@@ -171,7 +171,7 @@ public class FacturasXCobrar {
         this.valorXCobrar = valorXCobrar;
     }
 
-    public void setSecuenciaComprobante(String secuenciaComprobante) {
+    public void setSecuenciaComprobante(int secuenciaComprobante) {
         this.secuenciaComprobante = secuenciaComprobante;
     }
 

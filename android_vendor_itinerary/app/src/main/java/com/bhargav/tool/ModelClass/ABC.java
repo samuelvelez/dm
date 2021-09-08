@@ -5,42 +5,38 @@ import com.google.gson.annotations.SerializedName;
 
 public class ABC {
 
-    @SerializedName("error")
-    @Expose
-    private String error = null;
     @SerializedName("mensaje")
     @Expose
     private String mensaje;
-    @SerializedName("errorUsuario")
+    @SerializedName("causa")
     @Expose
-    private String errorUsuario = null;
+    private String causa;
+    @SerializedName("errorSistemas")
+    @Expose
+    private String errorSistemas;
 
-
-    // Getter Methods
-
-    public String getError() {
-        return error;
-    }
 
     public String getMensaje() {
         return mensaje;
-    }
-
-    public String getErrorUsuario() {
-        return errorUsuario;
-    }
-
-    // Setter Methods
-
-    public void setError(String error) {
-        this.error = error;
     }
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
 
-    public void setErrorUsuario(String errorUsuario) {
-        this.errorUsuario = errorUsuario;
+    public String getCausa() {
+        return causa;
+    }
+
+    public void setCausa(String causa) {
+        this.causa = causa;
+    }
+
+    public String getErrorSistemas() {
+        return errorSistemas;
+    }
+
+    public void setErrorSistemas(String errorSistemas) {
+        this.errorSistemas = errorSistemas;
     }
 }

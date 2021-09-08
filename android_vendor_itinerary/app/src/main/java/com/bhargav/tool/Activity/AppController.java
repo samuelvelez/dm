@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.bhargav.tool.ModelClass.ABC;
 import com.bhargav.tool.ModelClass.Clientes;
 import com.bhargav.tool.ModelClass.ClientesUtils;
+import com.bhargav.tool.ModelClass.ClientesUtilsTempFinal;
 import com.bhargav.tool.ModelClass.DetallePlanificacions;
 import com.bhargav.tool.ModelClass.FormasPago;
 import com.bhargav.tool.ModelClass.Planificaciones;
@@ -16,6 +17,8 @@ import com.bhargav.tool.ModelClass.RestClient;
 import com.bhargav.tool.Printer.MainActivity;
 import com.bhargav.tool.Utils;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -31,9 +34,9 @@ public class AppController extends Application {
     ArrayList<String> nombreFormaPago = new ArrayList<String>();
     public Handler handler;
     public Utils shareprefrence;
-    ArrayList<ClientesUtils> detallePlanificacionsData = new ArrayList<>();
+    ArrayList<ClientesUtilsTempFinal> detallePlanificacionsData = new ArrayList<>();
 
-    ArrayList<ClientesUtils> detallePlanificacionsDataNotUp = new ArrayList<>();
+    ArrayList<ClientesUtilsTempFinal> detallePlanificacionsDataNotUp = new ArrayList<>();
     boolean susss = false;
 
 
@@ -64,7 +67,7 @@ public class AppController extends Application {
                 if (Utils.getData(context, "UploadDetallePlanifi") != null) {
                     Gson gson2 = new Gson();
                     detallePlanificacionsData = gson2.fromJson(Utils.getData(context, "UploadDetallePlanifi"),
-                            new TypeToken<ArrayList<ClientesUtils>>() {
+                            new TypeToken<ArrayList<ClientesUtilsTempFinal>>() {
                             }.getType());
 
                     for (int position = 0; detallePlanificacionsData.size() > position; position++) {
@@ -87,30 +90,23 @@ public class AppController extends Application {
 
     private boolean apiCallForUpdateData(int position) {
 
-        int division_position = detallePlanificacionsData.get(position).getDivisionPosition();
+        ClientesUtilsTempFinal tempArr = detallePlanificacionsData.get(position);
+        Gson gson = new Gson();
+        String json = gson.toJson(tempArr);
 
-        Call<ABC> call = RestClient.post().registrarReciboCobroForUpload(
-                Utils.getData(context, "Personal"),
-                detallePlanificacionsData.get(position).getCodigo(),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getFormaPogoPosition()),
-                "OK",
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()),
-                String.valueOf(detallePlanificacionsData.get(position).getDivisionPosition()),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCuentaPosition()),
-                String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getDocumentNumber()),
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getInvoiceNoForUpdate(),    //hhmmss
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getDateForUpdate());  // aaj ni tarikh
+        JsonObject convertedObject = new JsonParser().parse(json).getAsJsonObject();
+
+        Call<ABC> call = RestClient.post().registrarReciboCobroForUpload(convertedObject);
 
         call.enqueue(new Callback<ABC>() {
             @Override
             public void onResponse(Call<ABC> call, Response<ABC> response) {
 
-
                 if (response.isSuccessful()) {
                     ABC datas = response.body();
 
                     if (datas.getMensaje().equals("OK")) {
-                        ArrayList<ClientesUtils> detallePlanificacionsDataTemp = new ArrayList<>();
+                        ArrayList<ClientesUtilsTempFinal> detallePlanificacionsDataTemp = new ArrayList<>();
 
                         for (int i = 0; detallePlanificacionsData.size() > i; i++) {
                             if (position != i) {
@@ -122,7 +118,7 @@ public class AppController extends Application {
                         susss = true;
 
                     } else {
-                        Toast.makeText(context, datas.getError(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, datas.getErrorSistemas(), Toast.LENGTH_SHORT).show();
                         susss = false;
                     }
 
@@ -178,6 +174,9 @@ public class AppController extends Application {
     }
 
     private void secondApiCall() {
+        ArrayList<String> nombreFormaPago = new ArrayList<String>();
+        ArrayList<Float> codigoFormaPago = new ArrayList<Float>();
+
         Call<FormasPago> call = RestClient.post().formasPago();
 
         call.enqueue(new Callback<FormasPago>() {
@@ -191,13 +190,16 @@ public class AppController extends Application {
 
                         for (int i = 0; i < datas.lsDafFormasPagos.size(); i++) {
                             nombreFormaPago.add(datas.lsDafFormasPagos.get(i).getNombreFormaPago());
+                            codigoFormaPago.add(datas.lsDafFormasPagos.get(i).getCodigoFormaPago());
                         }
 
                         Gson gson = new Gson();
-
                         String json = gson.toJson(nombreFormaPago);
-
                         Utils.saveData(context, "FormaPogo", json);
+
+                        Gson gson2 = new Gson();
+                        String json2 = gson2.toJson(codigoFormaPago);
+                        Utils.saveData(context, "codigoFormaPago", json2);
 
                     } else {
 

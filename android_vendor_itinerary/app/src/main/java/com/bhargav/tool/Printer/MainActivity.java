@@ -112,7 +112,6 @@ public class MainActivity extends ConnectionScreen {
                     byte [] encodeByte=Base64.decode(Utils.getData(MainActivity.this,"PRINT_URL"), Base64.DEFAULT);
                     InputStream inputStream  = new ByteArrayInputStream(encodeByte);
                     Bitmap signatureBitmap  = BitmapFactory.decodeStream(inputStream);
-                //    Bitmap signatureBitmap = Bitmap.createScaledBitmap(bitmap);
                     printer.printImage(new ZebraImageAndroid(signatureBitmap), 0, 0, signatureBitmap.getWidth(), signatureBitmap.getHeight(), false);
                     connection.close();
 

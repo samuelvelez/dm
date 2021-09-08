@@ -63,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
         et_user_name = findViewById(R.id.et_user_name);
         et_password = findViewById(R.id.et_password);
 
+        et_user_name.setText("MMUNOZ");
+        et_password.setText("123456");
+
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +119,8 @@ public class LoginActivity extends AppCompatActivity {
                 DataLogin dataLogin = gson.fromJson(datas.getObjeto(), DataLogin.class);
 
                 Utils.saveData(context, "Personal", String.valueOf(dataLogin.getSecuenciaPersonal()));
+                Utils.saveData(context, "INVOICENO", String.valueOf(dataLogin.getInvoice_no()));
+                Utils.saveData(context, "USERNAME", String.valueOf(dataLogin.getNombrePersonal()));
 
                 dataCall();
                 secondApiCall();
@@ -207,6 +212,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void secondApiCall() {
         ArrayList<String> nombreFormaPago = new ArrayList<String>();
+        ArrayList<Float> codigoFormaPago = new ArrayList<Float>();
 
         Call<FormasPago> call = RestClient.post().formasPago();
 
@@ -221,13 +227,16 @@ public class LoginActivity extends AppCompatActivity {
 
                         for (int i = 0; i < datas.lsDafFormasPagos.size(); i++) {
                             nombreFormaPago.add(datas.lsDafFormasPagos.get(i).getNombreFormaPago());
+                            codigoFormaPago.add(datas.lsDafFormasPagos.get(i).getCodigoFormaPago());
                         }
 
                         Gson gson = new Gson();
-
                         String json = gson.toJson(nombreFormaPago);
-
                         Utils.saveData(context, "FormaPogo", json);
+
+                        Gson gson2 = new Gson();
+                        String json2 = gson2.toJson(codigoFormaPago);
+                        Utils.saveData(context, "codigoFormaPago", json2);
 
                     } else {
 

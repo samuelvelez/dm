@@ -40,7 +40,6 @@ public class VerDetalleActivity extends AppCompatActivity {
     int colorSet = 0;
     TextView totalll;
     Button btn_aceptor;
-    String vallue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,7 @@ public class VerDetalleActivity extends AppCompatActivity {
 
         division_position = detallePlanificacionsData.get(position).getDivisionPosition();
 
-        totalll.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()));
+        totalll.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getValor()));
 
         AdapterForList adapterForList = new AdapterForList();
         gridList.setAdapter(adapterForList);
@@ -119,13 +118,13 @@ public class VerDetalleActivity extends AppCompatActivity {
             if (detallePlanificacionsData
                     .get(position)
                     .lsDivisiones.get(division_position)
-                    .lsFacturasXCobrar.get(i).getValor().equals("0")){
+                    .lsFacturasXCobrar.get(i).getValor()== 0) {
                 viewHolderForList.valor.setText("");
             } else {
-                viewHolderForList.valor.setText(detallePlanificacionsData
+                viewHolderForList.valor.setText(String.valueOf(detallePlanificacionsData
                         .get(position)
                         .lsDivisiones.get(division_position)
-                        .lsFacturasXCobrar.get(i).getValor());
+                        .lsFacturasXCobrar.get(i).getValor()));
             }
 
             if (detallePlanificacionsData
@@ -156,13 +155,13 @@ public class VerDetalleActivity extends AppCompatActivity {
                                 .get(position)
                                 .lsDivisiones.get(division_position)
                                 .lsFacturasXCobrar.get(i)
-                                .setValor("0");
+                                .setValor(0);
                     } else {
                         detallePlanificacionsData
                                 .get(position)
                                 .lsDivisiones.get(division_position)
                                 .lsFacturasXCobrar.get(i)
-                                .setValor(String.valueOf(viewHolderForList.valor.getText()));
+                                .setValor(Integer.parseInt(String.valueOf(viewHolderForList.valor.getText())));
                     }
                     abcd();
                 }
@@ -176,12 +175,30 @@ public class VerDetalleActivity extends AppCompatActivity {
                                 .get(position)
                                 .lsDivisiones.get(division_position)
                                 .lsFacturasXCobrar.get(i).setIsChecked(1);
+                        detallePlanificacionsData
+                                .get(position)
+                                .lsDivisiones
+                                .get(division_position)
+                                .setCantidad(detallePlanificacionsData
+                                        .get(position)
+                                        .lsDivisiones
+                                        .get(division_position)
+                                        .getCantidad() + 1);
                         abcd();
                     } else {
                         detallePlanificacionsData
                                 .get(position)
                                 .lsDivisiones.get(division_position)
                                 .lsFacturasXCobrar.get(i).setIsChecked(0);
+                        detallePlanificacionsData
+                                .get(position)
+                                .lsDivisiones
+                                .get(division_position)
+                                .setCantidad(detallePlanificacionsData
+                                        .get(position)
+                                        .lsDivisiones
+                                        .get(division_position)
+                                        .getCantidad() - 1);
                         abcd();
                     }
 
@@ -217,7 +234,7 @@ public class VerDetalleActivity extends AppCompatActivity {
 
     private void abcd() {
 
-        detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setBillTotal(0);
+        detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setValor(0);
 
         for (int i = 0;
              detallePlanificacionsData
@@ -235,18 +252,18 @@ public class VerDetalleActivity extends AppCompatActivity {
                         .lsDivisiones.get(division_position)
                         .lsFacturasXCobrar.get(i)
                         .getValor());
-                int total = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal();
+                int total = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getValor();
                 total = total + Integer.parseInt(String.valueOf(detallePlanificacionsData
                         .get(position)
                         .lsDivisiones.get(division_position)
                         .lsFacturasXCobrar.get(i)
                         .getValor()));
-                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setBillTotal(total);
+                detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setValor(total);
             }
 
         }
 
-        totalll.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getBillTotal()));
+        totalll.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getValor()));
     }
 
     private class ViewHolderForList {

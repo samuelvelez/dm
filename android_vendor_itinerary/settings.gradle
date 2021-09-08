@@ -1,2 +1,2 @@
-rootProject.name = "Tool"
+rootProject.name = "android_vender"
 include ':app'

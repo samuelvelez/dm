@@ -6,9 +6,18 @@ public class DataLogin {
     private String nombrePersonal;
     private String cedula;
     private long secuenciaPersonal;
-
+    private long invoice_no;
 
     // Getter Methods
+
+
+    public long getInvoice_no() {
+        return invoice_no;
+    }
+
+    public void setInvoice_no(long invoice_no) {
+        this.invoice_no = invoice_no;
+    }
 
     public float getCodigoPersonal() {
         return codigoPersonal;

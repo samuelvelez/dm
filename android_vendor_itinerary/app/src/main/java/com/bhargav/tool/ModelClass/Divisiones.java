@@ -62,12 +62,55 @@ public class Divisiones {
 
     private int cuentaPosition = 0;
     private int formaPogoPosition = 0;
-    private int documentNumber = 0;
-    private int billTotal = 0;
+    private int numeroTransaccion = 0;
+    private int valor = 0;
     private String fechaCheque = null;
     private String fechaEntrega = null;
     private String invoiceNoForUpdate = null;
     private String dateForUpdate = null;
+    private int cantidad = 0;
+    private int codigoNumeroCuenta = 0;
+    private int codigoFormaPago = 0;
+
+    public int getNumeroTransaccion() {
+        return numeroTransaccion;
+    }
+
+    public void setNumeroTransaccion(int numeroTransaccion) {
+        this.numeroTransaccion = numeroTransaccion;
+    }
+
+    public int getCodigoFormaPago() {
+        return codigoFormaPago;
+    }
+
+    public void setCodigoFormaPago(int codigoFormaPago) {
+        this.codigoFormaPago = codigoFormaPago;
+    }
+
+    public int getValor() {
+        return valor;
+    }
+
+    public void setValor(int valor) {
+        this.valor = valor;
+    }
+
+    public int getCodigoNumeroCuenta() {
+        return codigoNumeroCuenta;
+    }
+
+    public void setCodigoNumeroCuenta(int codigoNumeroCuenta) {
+        this.codigoNumeroCuenta = codigoNumeroCuenta;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 
     public int getCuentaPosition() {
         return cuentaPosition;
@@ -75,14 +118,6 @@ public class Divisiones {
 
     public int getFormaPogoPosition() {
         return formaPogoPosition;
-    }
-
-    public int getDocumentNumber() {
-        return documentNumber;
-    }
-
-    public int getBillTotal() {
-        return billTotal;
     }
 
     public String getFechaCheque() {
@@ -108,14 +143,6 @@ public class Divisiones {
 
     public void setFormaPogoPosition(int formaPogoPosition) {
         this.formaPogoPosition = formaPogoPosition;
-    }
-
-    public void setDocumentNumber(int documentNumber) {
-        this.documentNumber = documentNumber;
-    }
-
-    public void setBillTotal(int billTotal) {
-        this.billTotal = billTotal;
     }
 
     public void setFechaCheque(String fechaCheque) {
