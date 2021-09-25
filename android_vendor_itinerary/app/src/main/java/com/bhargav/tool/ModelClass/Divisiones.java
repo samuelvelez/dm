@@ -69,7 +69,7 @@ public class Divisiones {
     private String invoiceNoForUpdate = null;
     private String dateForUpdate = null;
     private int cantidad = 0;
-    private int codigoNumeroCuenta = 0;
+    private long codigoNumeroCuenta = 0;
     private int codigoFormaPago = 0;
 
     public int getNumeroTransaccion() {
@@ -96,11 +96,11 @@ public class Divisiones {
         this.valor = valor;
     }
 
-    public int getCodigoNumeroCuenta() {
+    public long getCodigoNumeroCuenta() {
         return codigoNumeroCuenta;
     }
 
-    public void setCodigoNumeroCuenta(int codigoNumeroCuenta) {
+    public void setCodigoNumeroCuenta(long codigoNumeroCuenta) {
         this.codigoNumeroCuenta = codigoNumeroCuenta;
     }
 

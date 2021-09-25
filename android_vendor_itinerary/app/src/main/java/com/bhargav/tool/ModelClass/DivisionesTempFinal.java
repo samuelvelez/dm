@@ -8,7 +8,7 @@ public class DivisionesTempFinal {
     private int valor = 0;
     private int codigoEmpresa = 1;
     private float codigoDivisiones;
-    private int codigoNumeroCuenta = 0;
+    private long codigoNumeroCuenta = 0;
     private int numeroTransaccion = 0;
 
     public int getNumeroTransaccion() {
@@ -19,11 +19,11 @@ public class DivisionesTempFinal {
         this.numeroTransaccion = numeroTransaccion;
     }
 
-    public int getCodigoNumeroCuenta() {
+    public long getCodigoNumeroCuenta() {
         return codigoNumeroCuenta;
     }
 
-    public void setCodigoNumeroCuenta(int codigoNumeroCuenta) {
+    public void setCodigoNumeroCuenta(long codigoNumeroCuenta) {
         this.codigoNumeroCuenta = codigoNumeroCuenta;
     }
 

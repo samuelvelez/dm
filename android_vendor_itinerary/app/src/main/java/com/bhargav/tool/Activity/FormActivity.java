@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -480,7 +481,9 @@ public class FormActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int i) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, final int i_po) {
+
+            int i = i_po;
 
             if (i < firt_ele) {
                 holder.remove.setVisibility(View.GONE);
@@ -706,7 +709,7 @@ public class FormActivity extends AppCompatActivity {
                             .setCuentaPosition(positionSpin);
                     detallePlanificacionsData.get(position)
                             .lsDivisiones.get(i)
-                            .setCodigoNumeroCuenta(Integer.parseInt(comNumerosCuentasData.get(positionSpin)));
+                            .setCodigoNumeroCuenta(Long.parseLong(comNumerosCuentasData.get(positionSpin)));
                     listAdapterForNewList.notifyDataSetChanged();
                 }
 
@@ -716,6 +719,34 @@ public class FormActivity extends AppCompatActivity {
             });
             holder.spinner_cuenta.setSelection(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCuentaPosition());
 
+            holder.remove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        detallePlanificacionsData.get(position).lsDivisiones.remove(i);
+                        notifyDataSetChanged();
+                        listAdapterForNewList.notifyDataSetChanged();
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        detallePlanificacionsData.get(position)
+                                .lsDivisiones.add(detallePlanificacionsData.get(position)
+                                .lsDivisiones.get(division_position));
+                        notifyDataSetChanged();
+                        listAdapterForNewList.notifyDataSetChanged();
+
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -743,36 +774,6 @@ public class FormActivity extends AppCompatActivity {
                 spinner_cuenta = itemView.findViewById(R.id.spinner_cuenta);
                 rel_box = itemView.findViewById(R.id.rel_box);
                 rel_forma_pogo = itemView.findViewById(R.id.rel_forma_pogo);
-
-                remove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int _position = getAdapterPosition();
-                        try {
-                            detallePlanificacionsData.get(position).lsDivisiones.remove(_position);
-                            notifyDataSetChanged();
-                            listAdapterForNewList.notifyDataSetChanged();
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                add.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int _position = getAdapterPosition();
-                        try {
-                            detallePlanificacionsData.get(position)
-                                    .lsDivisiones.add(detallePlanificacionsData.get(position)
-                                    .lsDivisiones.get(division_position));
-                            notifyDataSetChanged();
-                            listAdapterForNewList.notifyDataSetChanged();
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
             }
         }
     }
