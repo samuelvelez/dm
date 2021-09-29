@@ -72,6 +72,10 @@ public class Divisiones {
     private long codigoNumeroCuenta = 0;
     private int codigoFormaPago = 0;
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public int getNumeroTransaccion() {
         return numeroTransaccion;
     }

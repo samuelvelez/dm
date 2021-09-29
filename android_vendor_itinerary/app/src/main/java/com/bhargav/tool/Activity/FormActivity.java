@@ -11,10 +11,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,13 +39,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bhargav.tool.ModelClass.ABC;
-import com.bhargav.tool.ModelClass.Clientes;
 import com.bhargav.tool.ModelClass.ClientesUtils;
 import com.bhargav.tool.ModelClass.ClientesUtilsTemp;
 import com.bhargav.tool.ModelClass.ClientesUtilsTempFinal;
-import com.bhargav.tool.ModelClass.DetallePlanificacions;
 import com.bhargav.tool.ModelClass.Divisiones;
-import com.bhargav.tool.ModelClass.DivisionesTemp;
 import com.bhargav.tool.ModelClass.RestClient;
 import com.bhargav.tool.Printer.MainActivity;
 import com.bhargav.tool.R;
@@ -55,20 +52,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -80,7 +71,7 @@ public class FormActivity extends AppCompatActivity {
     EditText txt_cliente;
     Context context = FormActivity.this;
     Spinner spinner_division;
-    ArrayList<String> divisionesData = new ArrayList<String>();
+    ArrayList<String> divisionesData = new ArrayList<>();
     Button btn_print;
     ArrayList<ClientesUtils> detallePlanificacionsData = new ArrayList<>();
     ClientesUtils tempArr;
@@ -88,7 +79,7 @@ public class FormActivity extends AppCompatActivity {
     int division_position;
     String division_name;
     private static final int REQUEST_EXTERNAL_STORAGe = 1;
-    private static String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     int forma_pogo_po = 0;
     int forma_pogo_posiiii = 0;
@@ -140,12 +131,8 @@ public class FormActivity extends AppCompatActivity {
         recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(llm);
 
-        btn_print.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                apiJsonCreate();
-            }
-        });
+        btn_print.setOnClickListener(v -> apiJsonCreate());
+
     }
 
     private void apiJsonCreate() {
@@ -481,9 +468,7 @@ public class FormActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, final int i_po) {
-
-            int i = i_po;
+        public void onBindViewHolder(@NonNull ViewHolder holder, final int i) {
 
             if (i < firt_ele) {
                 holder.remove.setVisibility(View.GONE);
@@ -586,7 +571,7 @@ public class FormActivity extends AppCompatActivity {
             });
 
             String document_no = String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getNumeroTransaccion());
-            if (document_no.equals(null)) {
+            if (document_no.equals("0")) {
                 holder.et_documento.setText("");
             } else {
                 holder.et_documento.setText(document_no);
@@ -603,8 +588,6 @@ public class FormActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    listAdapterForNewList.notifyDataSetChanged();
-
                     if (String.valueOf(holder.et_documento.getText()).equals("")) {
                         detallePlanificacionsData.get(position).lsDivisiones.get(i)
                                 .setNumeroTransaccion(0);
@@ -612,6 +595,8 @@ public class FormActivity extends AppCompatActivity {
                         detallePlanificacionsData.get(position).lsDivisiones.get(i)
                                 .setNumeroTransaccion(Integer.parseInt(holder.et_documento.getText().toString()));
                     }
+
+                    listAdapterForNewList.notifyDataSetChanged();
                 }
             });
 
@@ -732,19 +717,42 @@ public class FormActivity extends AppCompatActivity {
                 }
             });
 
-            add.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        detallePlanificacionsData.get(position)
-                                .lsDivisiones.add(detallePlanificacionsData.get(position)
-                                .lsDivisiones.get(division_position));
-                        notifyDataSetChanged();
-                        listAdapterForNewList.notifyDataSetChanged();
+            add.setOnClickListener(v -> {
 
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        e.printStackTrace();
+                try {
+
+                    Divisiones temp = detallePlanificacionsData.get(position).lsDivisiones.get(division_position);
+
+                    Gson gson2 = new Gson();
+                    String json = gson2.toJson(temp);
+
+                    Gson gson3 = new Gson();
+                    Divisiones tempArrr = gson3.fromJson(json,
+                            new TypeToken<Divisiones>() {
+                            }.getType());
+
+                    tempArrr.setNumeroTransaccion(0);
+                    tempArrr.setCuentaPosition(0);
+                    tempArrr.setFechaCheque(null);
+                    tempArrr.setFechaEntrega(null);
+                    tempArrr.setValor(0);
+                    tempArrr.setCantidad(0);
+
+                    for (int j = 0; tempArrr.lsFacturasXCobrar.size() > j; j++) {
+                        tempArrr.lsFacturasXCobrar.get(j).setValor(0);
+                        tempArrr.lsFacturasXCobrar.get(j).setIsChecked(0);
                     }
+
+                    detallePlanificacionsData.get(position)
+                            .lsDivisiones.add(tempArrr);
+
+                    Intent intent = new Intent(context, FormActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    finish();
+
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
                 }
             });
         }
