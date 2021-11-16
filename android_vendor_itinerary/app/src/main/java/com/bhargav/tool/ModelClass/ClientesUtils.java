@@ -39,13 +39,13 @@ public class ClientesUtils {
 
     private int divisionPosition = 0;
     private int divisionMaster = 0;
-    private float codigoDivision;
+    private int codigoDivision;
 
-    public float getCodigoDivision() {
+    public int getCodigoDivision() {
         return codigoDivision;
     }
 
-    public void setCodigoDivision(float codigoDivision) {
+    public void setCodigoDivision(int codigoDivision) {
         this.codigoDivision = codigoDivision;
     }
 

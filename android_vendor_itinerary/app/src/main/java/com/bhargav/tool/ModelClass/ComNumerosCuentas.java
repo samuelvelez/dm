@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 public class ComNumerosCuentas {
     @SerializedName("codigoNumeroCuenta")
     @Expose
-    private float codigoNumeroCuenta;
+    private int codigoNumeroCuenta;
     @SerializedName("codigoCliente")
     @Expose
-    private float codigoCliente;
+    private int codigoCliente;
     @SerializedName("codigoInstitucion")
     @Expose
-    private float codigoInstitucion;
+    private int codigoInstitucion;
     @SerializedName("numeroCuenta")
     @Expose
     private String numeroCuenta;
@@ -35,15 +35,15 @@ public class ComNumerosCuentas {
 
     // Getter Methods
 
-    public float getCodigoNumeroCuenta() {
+    public int getCodigoNumeroCuenta() {
         return codigoNumeroCuenta;
     }
 
-    public float getCodigoCliente() {
+    public int getCodigoCliente() {
         return codigoCliente;
     }
 
-    public float getCodigoInstitucion() {
+    public int getCodigoInstitucion() {
         return codigoInstitucion;
     }
 
@@ -73,15 +73,15 @@ public class ComNumerosCuentas {
 
     // Setter Methods
 
-    public void setCodigoNumeroCuenta(float codigoNumeroCuenta) {
+    public void setCodigoNumeroCuenta(int codigoNumeroCuenta) {
         this.codigoNumeroCuenta = codigoNumeroCuenta;
     }
 
-    public void setCodigoCliente(float codigoCliente) {
+    public void setCodigoCliente(int codigoCliente) {
         this.codigoCliente = codigoCliente;
     }
 
-    public void setCodigoInstitucion(float codigoInstitucion) {
+    public void setCodigoInstitucion(int codigoInstitucion) {
         this.codigoInstitucion = codigoInstitucion;
     }
 

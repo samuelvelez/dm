@@ -5,11 +5,29 @@ import java.util.ArrayList;
 public class DivisionesTempFinal {
 
     public ArrayList<FacturasXCobrarTempFinal> lsCobXSecComps = new ArrayList<>();
-    private int valor = 0;
+    private double valor = 0.0;
     private int codigoEmpresa = 1;
-    private float codigoDivisiones;
+    private int codigoDivisiones;
     private long codigoNumeroCuenta = 0;
     private int numeroTransaccion = 0;
+    private double valorAplicado = 0;
+    private double valorSinAplicar = 0;
+
+    public void setValorAplicado(double valorAplicado) {
+        this.valorAplicado = valorAplicado;
+    }
+
+    public void setValorSinAplicar(double valorSinAplicar) {
+        this.valorSinAplicar = valorSinAplicar;
+    }
+
+    public double getValorAplicado() {
+        return valorAplicado;
+    }
+
+    public double getValorSinAplicar() {
+        return valorSinAplicar;
+    }
 
     public int getNumeroTransaccion() {
         return numeroTransaccion;
@@ -27,19 +45,19 @@ public class DivisionesTempFinal {
         this.codigoNumeroCuenta = codigoNumeroCuenta;
     }
 
-    public int getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(int valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 
-    public float getCodigoDivisiones() {
+    public int getCodigoDivisiones() {
         return codigoDivisiones;
     }
 
-    public void setCodigoDivisiones(float codigoDivisiones) {
+    public void setCodigoDivisiones(int codigoDivisiones) {
         this.codigoDivisiones = codigoDivisiones;
     }
 

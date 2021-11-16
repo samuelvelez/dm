@@ -7,7 +7,7 @@
         android:id="@+id/plate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_30dip">
-
+<!--
         <RelativeLayout
             android:layout_width="@dimen/_20dip"
             android:layout_height="wrap_content"
@@ -25,14 +25,30 @@
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
 
-        </RelativeLayout>
+        </RelativeLayout>-->
+        <RelativeLayout
+            android:layout_width="@dimen/_5dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-1dp"
+            android:layout_marginTop="-1dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/boarder_squer">
 
+            <CheckBox
+                android:id="@+id/checkboxx"
+                android:layout_width="@dimen/_30dip"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="@dimen/_90dip"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-1dp"
             android:layout_marginTop="-1dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.4"
             android:background="@drawable/boarder_squer">
 
             <TextView
@@ -81,28 +97,12 @@
                 android:background="@drawable/boarder_squer"
                 android:gravity="center"
                 android:hint="Izquierda"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/_5dip"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="-1dp"
-            android:layout_marginTop="-1dp"
-            android:layout_weight="0.2"
-            android:background="@drawable/boarder_squer">
 
-            <CheckBox
-                android:id="@+id/checkboxx"
-                android:layout_width="@dimen/_30dip"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/_15sip" />
-
-        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

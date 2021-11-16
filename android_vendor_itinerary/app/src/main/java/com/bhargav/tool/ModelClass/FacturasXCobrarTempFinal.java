@@ -2,7 +2,7 @@ package com.bhargav.tool.ModelClass;
 
 public class FacturasXCobrarTempFinal {
 
-    private int valor = 0;
+    private double valor = 0.0;
     private int codigoEmpresa = 1;
     private int secuenciaComprobante;
 
@@ -22,11 +22,11 @@ public class FacturasXCobrarTempFinal {
         this.codigoEmpresa = codigoEmpresa;
     }
 
-    public int getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(int valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 }

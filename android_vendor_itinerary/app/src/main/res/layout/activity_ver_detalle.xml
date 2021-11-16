@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_30dip"
         android:background="#B3B3B3">
-
+<!--
         <RelativeLayout
             android:layout_width="@dimen/_20dip"
             android:layout_height="wrap_content"
@@ -24,13 +24,29 @@
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
 
-        </RelativeLayout>
+        </RelativeLayout>-->
+        <RelativeLayout
+            android:layout_width="@dimen/_5dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-1dp"
+            android:layout_weight="0.2"
+            android:background="@drawable/boarder_squer">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/dash"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="@dimen/_90dip"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-1dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.4"
             android:background="@drawable/boarder_squer">
 
             <TextView
@@ -78,23 +94,7 @@
                 android:textSize="@dimen/_15sip" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="@dimen/_5dip"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="-1dp"
-            android:layout_weight="0.2"
-            android:background="@drawable/boarder_squer">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/dash"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/_15sip" />
-
-        </RelativeLayout>
     </LinearLayout>
 
     <ListView

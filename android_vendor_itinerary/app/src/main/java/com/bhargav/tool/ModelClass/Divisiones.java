@@ -9,7 +9,7 @@ public class Divisiones {
 
     @SerializedName("codigoDivision")
     @Expose
-    private float codigoDivision;
+    private int codigoDivision;
     @SerializedName("nombreDivision")
     @Expose
     private String nombreDivision;
@@ -63,14 +63,38 @@ public class Divisiones {
     private int cuentaPosition = 0;
     private int formaPogoPosition = 0;
     private int numeroTransaccion = 0;
-    private int valor = 0;
+    private Double valor = 0.0;
     private String fechaCheque = null;
     private String fechaEntrega = null;
     private String invoiceNoForUpdate = null;
     private String dateForUpdate = null;
     private int cantidad = 0;
-    private long codigoNumeroCuenta = 0;
+    private String codigoNumeroCuenta = "0";
     private int codigoFormaPago = 0;
+
+    public Double getTotalAbono() {
+        return totalAbono;
+    }
+
+    public void setTotalAbono(Double totalAbono) {
+        this.totalAbono = totalAbono;
+    }
+
+    public Double getTotalSinAplicar() {
+        return totalSinAplicar;
+    }
+
+    public void setTotalSinAplicar(Double totalSinAplicar) {
+        this.totalSinAplicar = totalSinAplicar;
+    }
+
+    private Double totalAbono = 0.0;
+    private Double totalSinAplicar = 0.0;
+
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
     public int getNumeroTransaccion() {
         return numeroTransaccion;
@@ -88,19 +112,19 @@ public class Divisiones {
         this.codigoFormaPago = codigoFormaPago;
     }
 
-    public int getValor() {
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(int valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 
-    public long getCodigoNumeroCuenta() {
+    public String getCodigoNumeroCuenta() {
         return codigoNumeroCuenta;
     }
 
-    public void setCodigoNumeroCuenta(long codigoNumeroCuenta) {
+    public void setCodigoNumeroCuenta(String codigoNumeroCuenta) {
         this.codigoNumeroCuenta = codigoNumeroCuenta;
     }
 
@@ -164,7 +188,7 @@ public class Divisiones {
 
     // Getter Methods
 
-    public float getCodigoDivision() {
+    public int getCodigoDivision() {
         return codigoDivision;
     }
 
@@ -230,7 +254,7 @@ public class Divisiones {
 
     // Setter Methods
 
-    public void setCodigoDivision(float codigoDivision) {
+    public void setCodigoDivision(int codigoDivision) {
         this.codigoDivision = codigoDivision;
     }
 

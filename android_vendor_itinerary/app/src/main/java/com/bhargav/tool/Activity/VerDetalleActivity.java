@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,14 +156,15 @@ public class VerDetalleActivity extends AppCompatActivity {
                                 .get(position)
                                 .lsDivisiones.get(division_position)
                                 .lsFacturasXCobrar.get(i)
-                                .setValor(0);
+                                .setValor(0.0);
                     } else {
                         detallePlanificacionsData
                                 .get(position)
                                 .lsDivisiones.get(division_position)
                                 .lsFacturasXCobrar.get(i)
-                                .setValor(Integer.parseInt(String.valueOf(viewHolderForList.valor.getText())));
+                                .setValor(Double.parseDouble(String.valueOf(viewHolderForList.valor.getText())));
                     }
+                    Double.parseDouble(String.valueOf(viewHolderForList.valor.getText()));
                     abcd();
                 }
             });
@@ -205,15 +207,18 @@ public class VerDetalleActivity extends AppCompatActivity {
                 }
             });
 
-            viewHolderForList.verid.setText(String.valueOf(detallePlanificacionsData
+            /*viewHolderForList.verid.setText(String.valueOf(detallePlanificacionsData
                     .get(position)
                     .lsDivisiones.get(division_position)
                     .lsFacturasXCobrar.get(i).getSecuenciaComprobante()));
-
+*/
             viewHolderForList.facrura.setText(String.valueOf(detallePlanificacionsData
                     .get(position)
                     .lsDivisiones.get(division_position)
-                    .lsFacturasXCobrar.get(i).getNumeroIdentificacionCliente()));
+                    .lsFacturasXCobrar.get(i).getFactura()));
+            Log.i("TAG", String.valueOf(detallePlanificacionsData.get(position)
+                    .lsDivisiones.get(division_position)
+                    .lsFacturasXCobrar.get(i).getFactura()));
 
             viewHolderForList.saldo.setText(String.valueOf(detallePlanificacionsData
                     .get(position)
@@ -234,7 +239,7 @@ public class VerDetalleActivity extends AppCompatActivity {
 
     private void abcd() {
 
-        detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setValor(0);
+        detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setValor(0.0);
 
         for (int i = 0;
              detallePlanificacionsData
@@ -252,12 +257,11 @@ public class VerDetalleActivity extends AppCompatActivity {
                         .lsDivisiones.get(division_position)
                         .lsFacturasXCobrar.get(i)
                         .getValor());
-                int total = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getValor();
-                total = total + Integer.parseInt(String.valueOf(detallePlanificacionsData
-                        .get(position)
-                        .lsDivisiones.get(division_position)
-                        .lsFacturasXCobrar.get(i)
-                        .getValor()));
+                Double total = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getValor();
+                total = total + Double.parseDouble(String.valueOf(detallePlanificacionsData.get(position)
+                                            .lsDivisiones.get(division_position)
+                                            .lsFacturasXCobrar.get(i)
+                                            .getValor()));
                 detallePlanificacionsData.get(position).lsDivisiones.get(division_position).setValor(total);
             }
 
@@ -267,7 +271,7 @@ public class VerDetalleActivity extends AppCompatActivity {
     }
 
     private class ViewHolderForList {
-        TextView verid, facrura, saldo;
+        TextView facrura, saldo; //verid
         LinearLayout plate;
         CheckBox checkboxx;
         EditText valor;
@@ -275,7 +279,7 @@ public class VerDetalleActivity extends AppCompatActivity {
         public ViewHolderForList(View view) {
             saldo = view.findViewById(R.id.saldo);
             facrura = view.findViewById(R.id.facrura);
-            verid = view.findViewById(R.id.verid);
+            //verid = view.findViewById(R.id.verid);
             plate = view.findViewById(R.id.plate);
             checkboxx = view.findViewById(R.id.checkboxx);
             valor = view.findViewById(R.id.valor);

@@ -11,18 +11,40 @@ public class ClientesUtilsTemp {
     private int secuencialPersonal = 0;
     private int codigoCliente;
     private String fechaReciboCobro;
-    private String invoce_No;
+    private int invoce_No;
     private int codigoEmpresa = 1;
     private String esActivo = "S";
-    private float codigoDivision;
-    private int totalAbonado = 0;
+    private int codigoDivision;
+    private double totalAbonado = 0;
     private int codigoFormaPago = 0;
+    private String codigoNumeroCuenta = "0";
+    private int secuenciaReciboCobro = 0;
 
-    public String getInvoce_No() {
+    public int getSecuenciaReciboCobro() {
+        return secuenciaReciboCobro;
+    }
+
+    public void setSecuenciaReciboCobro(int secuenciaReciboCobro) {
+        this.secuenciaReciboCobro = secuenciaReciboCobro;
+    }
+
+
+
+
+
+    public void setCodigoNumeroCuenta(String codigoNumeroCuenta) {
+        this.codigoNumeroCuenta = codigoNumeroCuenta;
+    }
+
+    public String getCodigoNumeroCuenta() {
+        return codigoNumeroCuenta;
+    }
+
+    public int getInvoce_No() {
         return invoce_No;
     }
 
-    public void setInvoce_No(String invoce_No) {
+    public void setInvoce_No(int invoce_No) {
         this.invoce_No = invoce_No;
     }
 
@@ -42,19 +64,19 @@ public class ClientesUtilsTemp {
         this.codigoCliente = codigoCliente;
     }
 
-    public int getTotalAbonado() {
+    public double getTotalAbonado() {
         return totalAbonado;
     }
 
-    public void setTotalAbonado(int totalAbonado) {
+    public void setTotalAbonado(double totalAbonado) {
         this.totalAbonado = totalAbonado;
     }
 
-    public float getCodigoDivision() {
+    public int getCodigoDivision() {
         return codigoDivision;
     }
 
-    public void setCodigoDivision(float codigoDivision) {
+    public void setCodigoDivision(int codigoDivision) {
         this.codigoDivision = codigoDivision;
     }
 

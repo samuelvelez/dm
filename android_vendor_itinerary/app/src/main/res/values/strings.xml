@@ -71,4 +71,6 @@
     <string name="saldo">Saldo</string>
     <string name="valor">Valor</string>
     <string name="cantidad">cantidad</string>
+    <string name="totalsinaplicar">Total sin Aplicar</string>
+    <string name="totalaplicado">Total Abono</string>
 </resources>

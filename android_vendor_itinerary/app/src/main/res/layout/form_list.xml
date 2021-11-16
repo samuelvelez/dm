@@ -156,7 +156,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/rel_cheque_date"
+            android:id="@+id/rel8"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rel7"
@@ -169,6 +169,66 @@
                 android:layout_width="@dimen/_100dip"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:text="@string/totalaplicado"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+            <EditText
+                android:id="@+id/ed_totalaplicado"
+                android:layout_width="@dimen/_100dip"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/txt_8"
+                android:layout_toRightOf="@+id/txt_8"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+           </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/totalnoaplicado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rel8"
+            android:layout_marginLeft="@dimen/_10dip"
+            android:layout_marginTop="@dimen/_20dip"
+            android:layout_marginRight="@dimen/_10dip">
+
+            <TextView
+                android:id="@+id/txt_9"
+                android:layout_width="@dimen/_100dip"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/totalsinaplicar"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+            <EditText
+                android:id="@+id/ed_totalsinaplicar"
+                android:layout_width="@dimen/_100dip"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/txt_9"
+                android:layout_toRightOf="@+id/txt_9"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel_cheque_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/totalnoaplicado"
+            android:layout_marginLeft="@dimen/_10dip"
+            android:layout_marginTop="@dimen/_20dip"
+            android:layout_marginRight="@dimen/_10dip">
+
+            <TextView
+                android:id="@+id/txt_10"
+                android:layout_width="@dimen/_100dip"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="@string/fecha_cheque"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
@@ -177,8 +237,8 @@
                 android:id="@+id/cheque_date"
                 android:layout_width="@dimen/_150dip"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/txt_8"
-                android:layout_toRightOf="@+id/txt_8"
+                android:layout_toEndOf="@+id/txt_10"
+                android:layout_toRightOf="@+id/txt_10"
                 android:singleLine="true"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
@@ -205,7 +265,7 @@
             android:layout_marginRight="@dimen/_10dip">
 
             <TextView
-                android:id="@+id/txt_9"
+                android:id="@+id/txt_11"
                 android:layout_width="@dimen/_100dip"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -217,8 +277,8 @@
                 android:id="@+id/entrega_date"
                 android:layout_width="@dimen/_150dip"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/txt_9"
-                android:layout_toRightOf="@+id/txt_9"
+                android:layout_toEndOf="@+id/txt_11"
+                android:layout_toRightOf="@+id/txt_11"
                 android:singleLine="true"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />

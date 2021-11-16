@@ -11,10 +11,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,13 +40,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bhargav.tool.ModelClass.ABC;
-import com.bhargav.tool.ModelClass.Clientes;
 import com.bhargav.tool.ModelClass.ClientesUtils;
 import com.bhargav.tool.ModelClass.ClientesUtilsTemp;
 import com.bhargav.tool.ModelClass.ClientesUtilsTempFinal;
-import com.bhargav.tool.ModelClass.DetallePlanificacions;
 import com.bhargav.tool.ModelClass.Divisiones;
-import com.bhargav.tool.ModelClass.DivisionesTemp;
 import com.bhargav.tool.ModelClass.RestClient;
 import com.bhargav.tool.Printer.MainActivity;
 import com.bhargav.tool.R;
@@ -55,20 +53,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -80,7 +72,7 @@ public class FormActivity extends AppCompatActivity {
     EditText txt_cliente;
     Context context = FormActivity.this;
     Spinner spinner_division;
-    ArrayList<String> divisionesData = new ArrayList<String>();
+    ArrayList<String> divisionesData = new ArrayList<>();
     Button btn_print;
     ArrayList<ClientesUtils> detallePlanificacionsData = new ArrayList<>();
     ClientesUtils tempArr;
@@ -88,7 +80,7 @@ public class FormActivity extends AppCompatActivity {
     int division_position;
     String division_name;
     private static final int REQUEST_EXTERNAL_STORAGe = 1;
-    private static String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     int forma_pogo_po = 0;
     int forma_pogo_posiiii = 0;
@@ -140,12 +132,8 @@ public class FormActivity extends AppCompatActivity {
         recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(llm);
 
-        btn_print.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                apiJsonCreate();
-            }
-        });
+        btn_print.setOnClickListener(v -> apiJsonCreate());
+
     }
 
     private void apiJsonCreate() {
@@ -162,10 +150,12 @@ public class FormActivity extends AppCompatActivity {
         temp_2 = gson.fromJson(json,
                 new TypeToken<ClientesUtilsTemp>() {
                 }.getType());
+        Log.i("TAG", json);
 
         temp_2.setCodigoCliente(Integer.parseInt(tempArr.getCodigo()));
         temp_2.setCodigoFormaPago(Integer.parseInt(temp_2.lsDivisiones.get(0).getCodigoFormaPago()));
-
+        temp_2.setSecuenciaReciboCobro(Integer.parseInt(Utils.getData(context, "INVOICENO")));
+        //temp_2.setCodigoNumeroCuenta("004");
         temp_2.setSecuencialPersonal(Integer.parseInt(Utils.getData(context, "Personal")));
 
         SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -175,10 +165,11 @@ public class FormActivity extends AppCompatActivity {
         if (Utils.getData(context, "INVOICENO") == null) {
             Utils.saveData(context, "INVOICENO", "1");
         }
-        temp_2.setInvoce_No(Utils.getData(context, "USERNAME")
-                + " " + Utils.getData(context, "INVOICENO"));
+        int new_invoice_no = Integer.parseInt(Utils.getData(context, "INVOICENO")) + 1;
+        Utils.saveData(context, "INVOICENO", String.valueOf(new_invoice_no));
+        temp_2.setInvoce_No(new_invoice_no);
         Utils.saveData(context, "INVOICENO", String.valueOf(Integer.parseInt(Utils.getData(context, "INVOICENO")) + 1));
-        temp_2.setCodigoDivision(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCodigoDivision());
+        temp_2.setCodigoDivision((detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCodigoDivision()));
 
         ClientesUtilsTemp temp_3 = temp_2;
 
@@ -220,7 +211,11 @@ public class FormActivity extends AppCompatActivity {
         Utils.saveData(context, "UploadTemp", jsonFinal);
         System.out.println("Call Api Body : " + jsonFinal);
 
-        screenshot();
+        //screenshot();
+        uploadData();
+        Intent intent = new Intent(context, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
@@ -287,12 +282,14 @@ public class FormActivity extends AppCompatActivity {
 
     public Bitmap takeScreenshot() {
         ScrollView iv = (ScrollView) findViewById(R.id.scrollView);
+        Log.i("takescreenshot", "takeScreenshot: "+ iv + " . " + iv.getChildAt(0).getWidth());
         Bitmap bitmap = Bitmap.createBitmap(
                 iv.getChildAt(0).getWidth(),
                 iv.getChildAt(0).getHeight(),
                 Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bitmap);
         iv.getChildAt(0).draw(c);
+        Log.d("takescreenshot", "takeScreenshot: "+ bitmap);
         return bitmap;
     }
 
@@ -301,12 +298,28 @@ public class FormActivity extends AppCompatActivity {
 
         CharSequence format = android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", date);
         try {
-            String dirpath = Environment.getExternalStorageDirectory() + "";
+            String dirpath = Environment.getExternalStorageDirectory() + "/pictures/";
             String path = dirpath + "/result-" + format + ".jpeg";
 
             Bitmap bitmap = takeScreenshot();
 
+            Log.e("screenshot", "screenshot: "+ bitmap.toString() );
             File imageurl = new File(path);
+            //File mFolder = new File(dirpath);
+            /*File imageurl = new File(path);
+            if (!imageurl.exists()) {
+                imageurl.createNewFile();
+            }
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(imageurl);
+                bitmap.compress(Bitmap.CompressFormat.PNG,70, fos);
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+            Log.e("screenshot", "imageurl: "+ imageurl );
             FileOutputStream outputStream = new FileOutputStream(imageurl);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
             outputStream.flush();
@@ -314,7 +327,7 @@ public class FormActivity extends AppCompatActivity {
 
             Utils.saveData(FormActivity.this, "PRINT_URL", String.valueOf(imageurl));
             uploadData();
-
+            Log.i("imageurl", "screenshot: "+ imageurl);
             return imageurl;
 
         } catch (FileNotFoundException io) {
@@ -481,9 +494,7 @@ public class FormActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, final int i_po) {
-
-            int i = i_po;
+        public void onBindViewHolder(@NonNull ViewHolder holder, final int i) {
 
             if (i < firt_ele) {
                 holder.remove.setVisibility(View.GONE);
@@ -533,6 +544,11 @@ public class FormActivity extends AppCompatActivity {
             holder.ed_total.setEnabled(false);
             holder.ed_total.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor()));
 
+            holder.totalsinaplicar.setEnabled(false);
+            holder.totalaplicado.setText(String.valueOf((detallePlanificacionsData.get(position).lsDivisiones.get(i).getTotalAbono())));
+            Log.d("*****************", holder.totalaplicado.getText().toString());
+
+
             holder.cheque_date_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -548,7 +564,7 @@ public class FormActivity extends AppCompatActivity {
                             Calendar fromCal = Calendar.getInstance();
                             fromCal.setTimeInMillis(0);
                             fromCal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                             String dateString = dateFormat.format(fromCal.getTime());
                             holder.cheque_date.setText(dateString);
                             detallePlanificacionsData.get(position)
@@ -572,9 +588,21 @@ public class FormActivity extends AppCompatActivity {
                         detallePlanificacionsData.get(position).lsDivisiones.get(i)
                                 .setNumeroTransaccion(Integer.parseInt(holder.et_documento.getText().toString()));
                     }
+                    //aqui iria
+                    Log.d("aqui iria", "hola");
+                    if (holder.totalaplicado.getText().toString().equals("")) {
+                        holder.totalaplicado.setText("0");
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setTotalAbono(0.0);
+                    } else {
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setTotalAbono(Double.parseDouble(holder.totalaplicado.getText().toString()));
+                        Log.e("Total", holder.totalaplicado.getText().toString());
+                    }
+
 
                     detallePlanificacionsData.get(position).lsDivisiones.get(i)
-                            .setValor(Integer.parseInt(holder.ed_total.getText().toString()));
+                            .setValor(Double.parseDouble(holder.ed_total.getText().toString()));
 
                     detallePlanificacionsData.get(position).setDivisionPosition(i);
                     listAdapterForNewList.notifyDataSetChanged();
@@ -586,7 +614,7 @@ public class FormActivity extends AppCompatActivity {
             });
 
             String document_no = String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getNumeroTransaccion());
-            if (document_no.equals(null)) {
+            if (document_no.equals("0")) {
                 holder.et_documento.setText("");
             } else {
                 holder.et_documento.setText(document_no);
@@ -603,8 +631,6 @@ public class FormActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    listAdapterForNewList.notifyDataSetChanged();
-
                     if (String.valueOf(holder.et_documento.getText()).equals("")) {
                         detallePlanificacionsData.get(position).lsDivisiones.get(i)
                                 .setNumeroTransaccion(0);
@@ -612,6 +638,8 @@ public class FormActivity extends AppCompatActivity {
                         detallePlanificacionsData.get(position).lsDivisiones.get(i)
                                 .setNumeroTransaccion(Integer.parseInt(holder.et_documento.getText().toString()));
                     }
+
+                    listAdapterForNewList.notifyDataSetChanged();
                 }
             });
 
@@ -670,6 +698,8 @@ public class FormActivity extends AppCompatActivity {
                         holder.rel_cuenta.setVisibility(View.GONE);
                         holder.rel_cheque_date.setVisibility(View.GONE);
                         holder.rel_entrega_date.setVisibility(View.GONE);
+                        holder.totalsinaplicar_box.setVisibility(View.GONE);
+                        holder.totalaplicado_box.setVisibility(View.GONE);
                         btn_add.setVisibility(View.GONE);
                         recyclerViewNew.setVisibility(View.GONE);
                         plate.setVisibility(View.GONE);
@@ -678,6 +708,9 @@ public class FormActivity extends AppCompatActivity {
                         holder.rel_cuenta.setVisibility(View.VISIBLE);
                         holder.rel_cheque_date.setVisibility(View.VISIBLE);
                         holder.rel_entrega_date.setVisibility(View.VISIBLE);
+                        holder.totalsinaplicar_box.setVisibility(View.VISIBLE);
+                        holder.totalaplicado_box.setVisibility(View.VISIBLE);
+
                         btn_add.setVisibility(View.VISIBLE);
                         recyclerViewNew.setVisibility(View.VISIBLE);
                         plate.setVisibility(View.VISIBLE);
@@ -694,7 +727,11 @@ public class FormActivity extends AppCompatActivity {
 
 
             for (int j = 0; detallePlanificacionsData.get(position).lsComNumerosCuentas.size() > j; j++) {
-                comNumerosCuentasData.add(detallePlanificacionsData.get(position).lsComNumerosCuentas.get(j).getNumeroCuenta());
+                String nuevo = "";
+                nuevo = String.valueOf(detallePlanificacionsData.get(position).lsComNumerosCuentas.get(j).getCodigoNumeroCuenta());
+                nuevo = nuevo.concat(" - ");
+                nuevo = nuevo.concat(String.valueOf(detallePlanificacionsData.get(position).lsComNumerosCuentas.get(j).getNumeroCuenta()));
+                comNumerosCuentasData.add(nuevo);
             }
 
             ArrayAdapter ad2 = new ArrayAdapter(context, android.R.layout.simple_spinner_item, comNumerosCuentasData);
@@ -709,7 +746,7 @@ public class FormActivity extends AppCompatActivity {
                             .setCuentaPosition(positionSpin);
                     detallePlanificacionsData.get(position)
                             .lsDivisiones.get(i)
-                            .setCodigoNumeroCuenta(Long.parseLong(comNumerosCuentasData.get(positionSpin)));
+                            .setCodigoNumeroCuenta(comNumerosCuentasData.get(positionSpin));
                     listAdapterForNewList.notifyDataSetChanged();
                 }
 
@@ -732,19 +769,42 @@ public class FormActivity extends AppCompatActivity {
                 }
             });
 
-            add.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        detallePlanificacionsData.get(position)
-                                .lsDivisiones.add(detallePlanificacionsData.get(position)
-                                .lsDivisiones.get(division_position));
-                        notifyDataSetChanged();
-                        listAdapterForNewList.notifyDataSetChanged();
+            add.setOnClickListener(v -> {
 
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        e.printStackTrace();
+                try {
+
+                    Divisiones temp = detallePlanificacionsData.get(position).lsDivisiones.get(division_position);
+
+                    Gson gson2 = new Gson();
+                    String json = gson2.toJson(temp);
+
+                    Gson gson3 = new Gson();
+                    Divisiones tempArrr = gson3.fromJson(json,
+                            new TypeToken<Divisiones>() {
+                            }.getType());
+
+                    tempArrr.setNumeroTransaccion(0);
+                    tempArrr.setCuentaPosition(0);
+                    tempArrr.setFechaCheque(null);
+                    tempArrr.setFechaEntrega(null);
+                    tempArrr.setValor(0.0);
+                    tempArrr.setCantidad(0);
+
+                    for (int j = 0; tempArrr.lsFacturasXCobrar.size() > j; j++) {
+                        tempArrr.lsFacturasXCobrar.get(j).setValor(0.0);
+                        tempArrr.lsFacturasXCobrar.get(j).setIsChecked(0);
                     }
+
+                    detallePlanificacionsData.get(position)
+                            .lsDivisiones.add(tempArrr);
+
+                    Intent intent = new Intent(context, FormActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    finish();
+
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
                 }
             });
         }
@@ -752,9 +812,11 @@ public class FormActivity extends AppCompatActivity {
         public class ViewHolder extends RecyclerView.ViewHolder {
             ImageView remove, cheque_date_img, entrega_date_img;
             EditText cheque_date, entrega_date, ed_total, et_documento;
+            EditText totalaplicado, totalsinaplicar;
             Button btn_ver_detalle;
             RelativeLayout rel_documento, rel_cuenta, rel_cheque_date, rel_entrega_date, rel_box, rel_forma_pogo;
             Spinner spinner_forma_pago, spinner_cuenta;
+            RelativeLayout totalaplicado_box, totalsinaplicar_box;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -774,6 +836,13 @@ public class FormActivity extends AppCompatActivity {
                 spinner_cuenta = itemView.findViewById(R.id.spinner_cuenta);
                 rel_box = itemView.findViewById(R.id.rel_box);
                 rel_forma_pogo = itemView.findViewById(R.id.rel_forma_pogo);
+                //TOTALES
+                totalaplicado_box = itemView.findViewById(R.id.rel8);
+                totalsinaplicar_box = itemView.findViewById(R.id.totalnoaplicado);
+                totalaplicado = itemView.findViewById(R.id.ed_totalaplicado);
+                totalsinaplicar = itemView.findViewById(R.id.ed_totalsinaplicar);
+
+
             }
         }
     }

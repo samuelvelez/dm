@@ -8,11 +8,13 @@ import java.util.ArrayList;
 public class DivisionesTemp {
 
     public ArrayList<FacturasXCobrarTemp> lsFacturasXCobrar = new ArrayList<FacturasXCobrarTemp>();
-    private int valor = 0;
+    private double valor = 0.0;
+    private double valorAplicado = 0.0;
+    private double valorSinAplicar = 0.0;
     private String codigoFormaPago;
     private int codigoEmpresa = 1;
-    private float codigoDivision;
-    private long codigoNumeroCuenta = 0;
+    private int codigoDivision;
+    private String codigoNumeroCuenta = "0";
     private int numeroTransaccion = 0;
 
     public int getNumeroTransaccion() {
@@ -23,27 +25,27 @@ public class DivisionesTemp {
         this.numeroTransaccion = numeroTransaccion;
     }
 
-    public long getCodigoNumeroCuenta() {
+    public String getCodigoNumeroCuenta() {
         return codigoNumeroCuenta;
     }
 
-    public void setCodigoNumeroCuenta(long codigoNumeroCuenta) {
+    public void setCodigoNumeroCuenta(String codigoNumeroCuenta) {
         this.codigoNumeroCuenta = codigoNumeroCuenta;
     }
 
-    public int getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(int valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 
-    public float getCodigoDivision() {
+    public int getCodigoDivision() {
         return codigoDivision;
     }
 
-    public void setCodigoDivision(float codigoDivision) {
+    public void setCodigoDivision(int codigoDivision) {
         this.codigoDivision = codigoDivision;
     }
 

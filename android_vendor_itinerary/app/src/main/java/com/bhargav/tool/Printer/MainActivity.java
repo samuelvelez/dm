@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.text.method.LinkMovementMethod;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -88,6 +89,7 @@ public class MainActivity extends ConnectionScreen {
             }
         } else {
             connection = new BluetoothConnection(getMacAddressFieldText());
+            Log.d("WWW",  getMacAddressFieldText());
         }
         try {
             connection.open();

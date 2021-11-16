@@ -49,11 +49,11 @@ public class FacturasXCobrar {
     private float codigoTipoComprobante;
     @SerializedName("codigoDivision")
     @Expose
-    private float codigoDivision;
+    private int codigoDivision;
 
     private int isChecked = 0;
 
-    private int valor = 0;
+    private Double valor = 0.0;
 
     public int getIsChecked() {
         return isChecked;
@@ -63,11 +63,11 @@ public class FacturasXCobrar {
         this.isChecked = isChecked;
     }
 
-    public int getValor() {
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(int valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 
@@ -129,7 +129,7 @@ public class FacturasXCobrar {
         return codigoTipoComprobante;
     }
 
-    public float getCodigoDivision() {
+    public int getCodigoDivision() {
         return codigoDivision;
     }
 
@@ -191,7 +191,7 @@ public class FacturasXCobrar {
         this.codigoTipoComprobante = codigoTipoComprobante;
     }
 
-    public void setCodigoDivision(float codigoDivision) {
+    public void setCodigoDivision(int codigoDivision) {
         this.codigoDivision = codigoDivision;
     }
 }
