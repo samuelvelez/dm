@@ -46,10 +46,10 @@
     <string name="forma_pago">Forma Pago</string>
     <string name="documento"># Documento</string>
     <string name="cuenta">Cuenta</string>
-    <string name="fecha_cheque">Fecha Cheque</string>
+    <string name="fecha_cheque">Fecha Cobro</string>
     <string name="fecha_entrega">Fecha Entrega</string>
     <string name="ver_detalle">Ver Detalle</string>
-    <string name="guardra_e_imprimir">Guardra e Imprimir</string>
+    <string name="guardra_e_imprimir">Guardar e Imprimir</string>
     <string name="ip_dns">IP/DNS</string>
     <string name="bluetooth_r">Bluetooth (R)</string>
     <string name="ip_address">Ip Address:</string>
@@ -73,4 +73,7 @@
     <string name="cantidad">cantidad</string>
     <string name="totalsinaplicar">Total sin Aplicar</string>
     <string name="totalaplicado">Total Abono</string>
+    <string name="observacion">Observacion</string>
+    <string name="add_photo">Agregar Foto</string>
+    <string name="forma_pago_tipo">Tipo</string>
 </resources>

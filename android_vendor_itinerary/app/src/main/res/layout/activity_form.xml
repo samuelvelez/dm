@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rel1"
                 android:layout_marginLeft="@dimen/_30dip"
-                android:layout_marginTop="@dimen/_20dip"
+                android:layout_marginTop="@dimen/_10dip"
                 android:layout_marginRight="@dimen/_30dip">
 
                 <TextView
@@ -77,10 +77,41 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rel_obs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rel2"
+                android:layout_marginLeft="@dimen/_30dip"
+                android:layout_marginRight="@dimen/_30dip">
+
+                <TextView
+                    android:id="@+id/txt_3"
+                    android:layout_width="@dimen/_100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/observacion"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip" />
+
+                <EditText
+                    android:id="@+id/txt_obs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/txt_3"
+                    android:layout_toRightOf="@+id/txt_3"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sip"
+                    android:lines="2"/>
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/rel3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1dip"
-                android:layout_below="@+id/rel2"
+                android:layout_below="@+id/rel_obs"
                 android:layout_marginTop="@dimen/_10dip"
                 android:background="@android:color/black" />
 
@@ -169,6 +200,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/plate" />
+
+            <Button
+                android:id="@+id/btn_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recycle_view_new"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_10dip"
+                android:layout_marginBottom="@dimen/_10dip"
+                android:background="@color/colorPrimary"
+                android:paddingLeft="@dimen/_10dip"
+                android:paddingRight="@dimen/_10dip"
+                android:text="@string/add_photo"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent" />
 
             <Button
                 android:id="@+id/btn_print"

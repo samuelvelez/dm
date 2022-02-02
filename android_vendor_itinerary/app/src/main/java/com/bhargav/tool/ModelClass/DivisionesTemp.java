@@ -9,6 +9,23 @@ public class DivisionesTemp {
 
     public ArrayList<FacturasXCobrarTemp> lsFacturasXCobrar = new ArrayList<FacturasXCobrarTemp>();
     private double valor = 0.0;
+
+    public double getValorAplicado() {
+        return valorAplicado;
+    }
+
+    public void setValorAplicado(double valorAplicado) {
+        this.valorAplicado = valorAplicado;
+    }
+
+    public double getValorSinAplicar() {
+        return valorSinAplicar;
+    }
+
+    public void setValorSinAplicar(double valorSinAplicar) {
+        this.valorSinAplicar = valorSinAplicar;
+    }
+
     private double valorAplicado = 0.0;
     private double valorSinAplicar = 0.0;
     private String codigoFormaPago;
@@ -16,6 +33,24 @@ public class DivisionesTemp {
     private int codigoDivision;
     private String codigoNumeroCuenta = "0";
     private int numeroTransaccion = 0;
+    private boolean transferencia = false;
+    private boolean efectivo = false;
+
+    public boolean isTransferencia() {
+        return transferencia;
+    }
+
+    public void setTransferencia(boolean transferencia) {
+        this.transferencia = transferencia;
+    }
+
+    public boolean isEfectivo() {
+        return efectivo;
+    }
+
+    public void setEfectivo(boolean efectivo) {
+        this.efectivo = efectivo;
+    }
 
     public int getNumeroTransaccion() {
         return numeroTransaccion;

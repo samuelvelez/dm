@@ -51,10 +51,59 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/rel_documento"
+            android:id="@+id/check_forma_pogo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rel_forma_pogo"
+            android:layout_marginLeft="@dimen/_10dip"
+            android:layout_marginTop="@dimen/_20dip"
+            android:layout_marginRight="@dimen/_10dip">
+
+            <TextView
+                android:id="@+id/txt_tipo"
+                android:layout_width="@dimen/_100dip"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/forma_pago_tipo"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sip" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_toEndOf="@+id/txt_tipo"
+                android:layout_toRightOf="@+id/txt_tipo"
+                android:background="@drawable/boarder_for_spinner">
+
+
+                <!--<Spinner
+                    android:id="@+id/spinner_forma_pago"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />-->
+                <CheckBox
+                    android:id="@+id/efectivo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Efectivo" />
+
+                <CheckBox
+                    android:id="@+id/transferencia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/efectivo"
+                    android:text="Transferencia" />
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel_documento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_forma_pogo"
             android:layout_marginLeft="@dimen/_10dip"
             android:layout_marginTop="@dimen/_20dip"
             android:layout_marginRight="@dimen/_10dip">

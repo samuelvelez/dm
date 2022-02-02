@@ -71,6 +71,43 @@ public class Divisiones {
     private int cantidad = 0;
     private String codigoNumeroCuenta = "0";
     private int codigoFormaPago = 0;
+    private double valorAplicado = 0.0;
+    private double valorSinAplicar = 0.0;
+    private boolean esEfectivo = false;
+    private boolean esTransferencia = false;
+
+    public boolean isEsEfectivo() {
+        return esEfectivo;
+    }
+
+    public void setEsEfectivo(boolean esEfectivo) {
+        this.esEfectivo = esEfectivo;
+    }
+
+    public boolean isEsTransferencia() {
+        return esTransferencia;
+    }
+
+    public void setEsTransferencia(boolean esTransferencia) {
+        this.esTransferencia = esTransferencia;
+    }
+
+    public double getValorAplicado() {
+        return valorAplicado;
+    }
+
+    public void setValorAplicado(double valorAplicado) {
+        this.valorAplicado = valorAplicado;
+    }
+
+    public double getValorSinAplicar() {
+        return valorSinAplicar;
+    }
+
+    public void setValorSinAplicar(double valorSinAplicar) {
+        this.valorSinAplicar = valorSinAplicar;
+    }
+
 
     public Double getTotalAbono() {
         return totalAbono;
