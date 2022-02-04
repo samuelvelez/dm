@@ -40,6 +40,24 @@ public class ClientesUtils {
     private int divisionPosition = 0;
     private int divisionMaster = 0;
     private int codigoDivision;
+    private String observacion;
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
 
     public int getCodigoDivision() {
         return codigoDivision;

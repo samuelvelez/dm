@@ -14,6 +14,24 @@ public class ClientesUtilsTempFinal {
     private double totalAbonado = 0.0;
     private int codigoFormaPago = 0;
     private int secuenciaReciboCobro = 0;
+    private String observacion;
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
 
     public int getSecuenciaReciboCobro(){ return secuenciaReciboCobro; }
 

@@ -229,6 +229,7 @@
                 android:layout_toEndOf="@+id/txt_8"
                 android:layout_toRightOf="@+id/txt_8"
                 android:singleLine="true"
+                android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
 
@@ -259,6 +260,7 @@
                 android:layout_toEndOf="@+id/txt_9"
                 android:layout_toRightOf="@+id/txt_9"
                 android:singleLine="true"
+                android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
 

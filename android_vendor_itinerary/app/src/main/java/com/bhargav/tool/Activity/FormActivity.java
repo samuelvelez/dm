@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import android.util.Base64;
@@ -80,7 +81,7 @@ import android.provider.MediaStore;
 
 public class FormActivity extends AppCompatActivity {
 
-    EditText txt_cliente;
+    EditText txt_cliente, txt_obs;
     Context context = FormActivity.this;
     Spinner spinner_division;
     ArrayList<String> divisionesData = new ArrayList<>();
@@ -92,7 +93,9 @@ public class FormActivity extends AppCompatActivity {
     int division_position;
     String division_name;
     private static final int REQUEST_EXTERNAL_STORAGe = 1;
-    private static final String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final String[] permissionstorage = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,  Manifest.permission.CAMERA};
+
+    ImageView img_view;
 
     int forma_pogo_po = 0;
     int forma_pogo_posiiii = 0;
@@ -109,7 +112,6 @@ public class FormActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +157,12 @@ public class FormActivity extends AppCompatActivity {
         btn_image.setOnClickListener(v -> camera());
         btn_print.setOnClickListener(v -> apiJsonCreate());
 
+        if (detallePlanificacionsData.get(position).getImage() != null){
+            byte[] decodedString = Base64.decode(detallePlanificacionsData.get(position).getImage(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            img_view.setImageBitmap(decodedByte);
+        }
+
     }
 
     private void camera(){
@@ -177,9 +185,15 @@ public class FormActivity extends AppCompatActivity {
                 //ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 //imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
-            String cadena =Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+            String cadena = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
 
                     cadena = cadena.replaceAll("\\s+","");
+                    detallePlanificacionsData.get(position).setImage(cadena);
+
+            byte[] decodedString = Base64.decode(cadena, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            img_view.setImageBitmap(decodedByte);
+
             Log.d("imagen", cadena);
             //}
             //agregar a arreglo de imagenes a enviar
@@ -360,14 +374,14 @@ public class FormActivity extends AppCompatActivity {
         Utils.saveData(context, "UploadTemp", jsonFinal);
         System.out.println("Call Api Body : " + jsonFinal);
 
-        /*if(should_pass){
+        if(should_pass){
             //screenshot();
             uploadData();
             Intent intent = new Intent(context, PlanningActivity.class);
             startActivity(intent);
             finish();
             //revisar el mainactivity si ese no hacia que se borre de la lista!!!
-        }*/
+        }
 
     }
 
@@ -430,6 +444,23 @@ public class FormActivity extends AppCompatActivity {
 
         txt_cliente.setEnabled(false);
         txt_cliente.setText(detallePlanificacionsData.get(position).getNombres());
+
+        txt_obs.setText(detallePlanificacionsData.get(position).getObservacion());
+
+        txt_obs.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                detallePlanificacionsData.get(position).setObservacion(txt_obs.getText().toString());
+            }
+        });
 
     }
 
@@ -577,9 +608,11 @@ public class FormActivity extends AppCompatActivity {
         btn_print = findViewById(R.id.btn_print);
         btn_image = findViewById(R.id.btn_image);
         txt_cliente = findViewById(R.id.txt_cliente);
+        txt_obs = findViewById(R.id.txt_obs);
         spinner_division = findViewById(R.id.spinner_division);
         btn_add = findViewById(R.id.btn_add);
         plate = findViewById(R.id.plate);
+        img_view = findViewById(R.id.img_view);
     }
 
 
@@ -643,7 +676,9 @@ public class FormActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, final int i) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int posi) {
+
+            int i = holder.getAdapterPosition();
 
             if (i < firt_ele) {
                 holder.remove.setVisibility(View.GONE);
@@ -710,12 +745,18 @@ public class FormActivity extends AppCompatActivity {
             double tsa = detallePlanificacionsData.get(position).lsDivisiones.get(i).getTotalAbono() - detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor();
             holder.totalsinaplicar.setText(String.valueOf(tsa));
 
-            if(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCodigoFormaPago()==6){
+         //   if(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCodigoFormaPago()==6){
                 Log.e("estransferencia" + i + ".."+ division_position + "//"+ position, String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).isEsTransferencia()));
                 Log.e("esefectivo" + i + ".."+ division_position, String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).isEsEfectivo()));
                 Log.d("ver codigo formapago", String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCodigoFormaPago()));
                 holder.efectivo.setChecked(detallePlanificacionsData.get(position).lsDivisiones.get(i).isEsEfectivo());
                 holder.transferencia.setChecked(detallePlanificacionsData.get(position).lsDivisiones.get(i).isEsTransferencia());
+
+                if (detallePlanificacionsData.get(position).lsDivisiones.get(i).isEsTransferencia()){
+                    holder.rel_documento.setVisibility(View.GONE);
+                } else {
+                    holder.rel_documento.setVisibility(View.VISIBLE);
+                }
 
                 holder.efectivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -731,6 +772,7 @@ public class FormActivity extends AppCompatActivity {
 
                         } else {
                             holder.efectivo.setChecked(false);
+                            holder.transferencia.setChecked(true);
                             holder.rel_documento.setVisibility(View.GONE);
                             detallePlanificacionsData.get(position).lsDivisiones.get(i).setEsEfectivo(false);
                             detallePlanificacionsData.get(position).lsDivisiones.get(i).setEsTransferencia(true);
@@ -744,6 +786,7 @@ public class FormActivity extends AppCompatActivity {
                         Log.e("cambio","clickeo trnasferencia" + position + " - "+ i);
                         if (holder.transferencia.isChecked()) {
                             Log.e("click tra en posicion", String.valueOf(i));
+                            holder.transferencia.setChecked(true);
                             holder.efectivo.setChecked(false);
                             holder.rel_documento.setVisibility(View.GONE);
                             detallePlanificacionsData.get(position).lsDivisiones.get(i).setEsEfectivo(false);
@@ -758,7 +801,7 @@ public class FormActivity extends AppCompatActivity {
                         }
                     }
                 });
-            }
+           // }
 
 
             holder.cheque_date_img.setOnClickListener(new View.OnClickListener() {
@@ -990,41 +1033,41 @@ public class FormActivity extends AppCompatActivity {
                     detallePlanificacionsData.get(position).lsDivisiones.get(i).setCodigoFormaPago(Math.round(codigoFormaPago.get(positionSpin)));
                     Log.e("tipo", nombreFormaPago.get(positionSpin));
                     if (nombreFormaPago.get(positionSpin).equals("EFECTIVO")) {
-                        holder.rel_documento.setVisibility(View.GONE);
+                     //   holder.rel_documento.setVisibility(View.GONE);
                         holder.rel_cuenta.setVisibility(View.GONE);
                         holder.rel_cheque_date.setVisibility(View.GONE);
                         holder.rel_entrega_date.setVisibility(View.GONE);
                         holder.totalsinaplicar_box.setVisibility(View.GONE);
                         holder.totalaplicado_box.setVisibility(View.GONE);
                         holder.check_forma_pago.setVisibility(View.GONE);
-                        holder.efectivo.setChecked(false);
-                        holder.transferencia.setChecked(false);
+//                        holder.efectivo.setChecked(false);
+//                        holder.transferencia.setChecked(false);
                         btn_add.setVisibility(View.GONE);
                         recyclerViewNew.setVisibility(View.GONE);
                         plate.setVisibility(View.GONE);
                     } else if(nombreFormaPago.get(positionSpin).equals("DEPOSITO")){
-                        holder.rel_documento.setVisibility(View.VISIBLE);
+                    //    holder.rel_documento.setVisibility(View.VISIBLE);
                         holder.check_forma_pago.setVisibility(View.VISIBLE);
                         holder.rel_cuenta.setVisibility(View.VISIBLE);
                         holder.rel_cheque_date.setVisibility(View.GONE);
                         holder.rel_entrega_date.setVisibility(View.VISIBLE);
                         holder.totalsinaplicar_box.setVisibility(View.GONE);
                         holder.totalaplicado_box.setVisibility(View.VISIBLE);
-                        holder.efectivo.setChecked(false);
-                        holder.transferencia.setChecked(false);
+//                        holder.efectivo.setChecked(false);
+//                        holder.transferencia.setChecked(false);
                         btn_add.setVisibility(View.VISIBLE);
                         recyclerViewNew.setVisibility(View.VISIBLE);
                         plate.setVisibility(View.VISIBLE);
                     }else{
                         holder.check_forma_pago.setVisibility(View.GONE);
-                        holder.rel_documento.setVisibility(View.VISIBLE);
+                     //   holder.rel_documento.setVisibility(View.VISIBLE);
                         holder.rel_cuenta.setVisibility(View.VISIBLE);
                         holder.rel_cheque_date.setVisibility(View.VISIBLE);
                         holder.rel_entrega_date.setVisibility(View.VISIBLE);
                         holder.totalsinaplicar_box.setVisibility(View.VISIBLE);
                         holder.totalaplicado_box.setVisibility(View.VISIBLE);
-                        holder.efectivo.setChecked(true);
-                        holder.transferencia.setChecked(false);
+//                        holder.efectivo.setChecked(true);
+//                        holder.transferencia.setChecked(false);
                         btn_add.setVisibility(View.VISIBLE);
                         recyclerViewNew.setVisibility(View.VISIBLE);
                         plate.setVisibility(View.VISIBLE);
@@ -1071,9 +1114,13 @@ public class FormActivity extends AppCompatActivity {
             });
             holder.spinner_cuenta.setSelection(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCuentaPosition());
 
-            holder.remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            holder.remove.setOnClickListener(v -> {
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+                alert.setTitle("Eliminar la entrada");
+                alert.setMessage("¿Estás segura de que quieres eliminar?");
+                alert.setPositiveButton("sí", (dialog, which) -> {
                     try {
                         detallePlanificacionsData.get(position).lsDivisiones.remove(i);
                         notifyDataSetChanged();
@@ -1081,7 +1128,12 @@ public class FormActivity extends AppCompatActivity {
                     } catch (ArrayIndexOutOfBoundsException e) {
                         e.printStackTrace();
                     }
-                }
+                });
+                alert.setNegativeButton("No", (dialog, which) -> {
+                    dialog.cancel();
+                });
+                alert.show();
+
             });
 
             add.setOnClickListener(v -> {
