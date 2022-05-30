@@ -14,8 +14,9 @@ public class ClientesUtilsTempFinal {
     private double totalAbonado = 0.0;
     private int codigoFormaPago = 0;
     private int secuenciaReciboCobro = 0;
-    private String observacion;
+    private String observaciones;
     private String image;
+    public ArrayList<ArchivosAdjuntos2> lsArchivosAdjuntos2 = new ArrayList<>();
 
     public String getImage() {
         return image;
@@ -25,12 +26,12 @@ public class ClientesUtilsTempFinal {
         this.image = image;
     }
 
-    public String getObservacion() {
-        return observacion;
+    public String getObservaciones() {
+        return observaciones;
     }
 
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
     }
 
     public int getSecuenciaReciboCobro(){ return secuenciaReciboCobro; }

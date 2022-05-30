@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                 Utils.saveData(context, "Personal", String.valueOf(dataLogin.getSecuenciaPersonal()));
                 Utils.saveData(context, "INVOICENO", String.valueOf(dataLogin.getInvoice_no()));
                 Utils.saveData(context, "USERNAME", String.valueOf(dataLogin.getNombrePersonal()));
-
+                Utils.saveData(context, "macAdress", String.valueOf(dataLogin.getMacAdress()));
                 dataCall();
                 secondApiCall();
 

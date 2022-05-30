@@ -36,12 +36,24 @@ public class ClientesUtils {
     @SerializedName("lsComNumerosCuentas")
     @Expose
     public ArrayList<ComNumerosCuentas> lsComNumerosCuentas = new ArrayList<ComNumerosCuentas>();
+    @SerializedName("lsArchivosAdjuntos2")
+    @Expose
+    public ArrayList<ArchivosAdjuntos2> lsArchivosAdjuntos2 = new ArrayList<ArchivosAdjuntos2>();
 
     private int divisionPosition = 0;
     private int divisionMaster = 0;
     private int codigoDivision;
-    private String observacion;
+    private String observaciones;
     private String image;
+    private Boolean filled = false;
+
+    public Boolean getFilled() {
+        return filled;
+    }
+
+    public void setFilled(Boolean filled) {
+        this.filled = filled;
+    }
 
     public String getImage() {
         return image;
@@ -51,12 +63,12 @@ public class ClientesUtils {
         this.image = image;
     }
 
-    public String getObservacion() {
-        return observacion;
+    public String getObservaciones() {
+        return observaciones;
     }
 
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
     }
 
     public int getCodigoDivision() {

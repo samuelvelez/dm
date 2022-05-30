@@ -164,7 +164,13 @@ public class VerDetalleActivity extends AppCompatActivity {
                                 .lsFacturasXCobrar.get(i)
                                 .setValor(Double.parseDouble(String.valueOf(viewHolderForList.valor.getText())));
                     }
-                    Double.parseDouble(String.valueOf(viewHolderForList.valor.getText()));
+
+                    try{
+                        Double.parseDouble(String.valueOf(viewHolderForList.valor.getText()));
+                    }catch(Exception e){
+                        Double.parseDouble(String.valueOf(0));
+                    }
+
                     abcd();
                 }
             });

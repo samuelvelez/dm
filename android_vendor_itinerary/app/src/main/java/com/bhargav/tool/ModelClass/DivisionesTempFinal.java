@@ -2,7 +2,7 @@ package com.bhargav.tool.ModelClass;
 
 import java.util.ArrayList;
 
-public class DivisionesTempFinal {
+public class  DivisionesTempFinal {
 
     public ArrayList<FacturasXCobrarTempFinal> lsCobXSecComps = new ArrayList<>();
     private double valor = 0.0;

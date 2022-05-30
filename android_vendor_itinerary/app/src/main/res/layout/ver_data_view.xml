@@ -96,7 +96,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/boarder_squer"
                 android:gravity="center"
-                android:hint="Izquierda"
+                android:hint=""
                 android:inputType="numberDecimal"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />

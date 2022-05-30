@@ -229,7 +229,7 @@
                 android:layout_toEndOf="@+id/txt_8"
                 android:layout_toRightOf="@+id/txt_8"
                 android:singleLine="true"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sip" />
 
@@ -270,7 +270,7 @@
             android:id="@+id/rel_cheque_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/totalnoaplicado"
+            android:layout_below="@+id/rel_entrega_date"
             android:layout_marginLeft="@dimen/_10dip"
             android:layout_marginTop="@dimen/_20dip"
             android:layout_marginRight="@dimen/_10dip">
@@ -310,7 +310,7 @@
             android:id="@+id/rel_entrega_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rel_cheque_date"
+            android:layout_below="@+id/totalnoaplicado"
             android:layout_marginLeft="@dimen/_10dip"
             android:layout_marginTop="@dimen/_20dip"
             android:layout_marginRight="@dimen/_10dip">

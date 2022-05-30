@@ -7,9 +7,18 @@ public class DataLogin {
     private String cedula;
     private long secuenciaPersonal;
     private long invoice_no;
+    private String macAdress;
 
     // Getter Methods
 
+
+    public String getMacAdress() {
+        return macAdress;
+    }
+
+    public void setMacAdress(String macAdress) {
+        this.macAdress = macAdress;
+    }
 
     public long getInvoice_no() {
         return invoice_no;

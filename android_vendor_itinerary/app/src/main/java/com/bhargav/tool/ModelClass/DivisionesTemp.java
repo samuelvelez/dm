@@ -35,6 +35,24 @@ public class DivisionesTemp {
     private int numeroTransaccion = 0;
     private boolean transferencia = false;
     private boolean efectivo = false;
+    private String fechaCheque = null;
+    private String fechaEntrega = null;
+
+    public String getFechaCheque() {
+        return fechaCheque;
+    }
+
+    public void setFechaCheque(String fechaCheque) {
+        this.fechaCheque = fechaCheque;
+    }
+
+    public String getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    public void setFechaEntrega(String fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
+    }
 
     public boolean isTransferencia() {
         return transferencia;

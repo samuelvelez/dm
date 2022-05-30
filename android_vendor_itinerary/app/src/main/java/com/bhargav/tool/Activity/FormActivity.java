@@ -48,6 +48,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bhargav.tool.ModelClass.ABC;
+import com.bhargav.tool.ModelClass.ArchivosAdjuntos2;
 import com.bhargav.tool.ModelClass.ClientesUtils;
 import com.bhargav.tool.ModelClass.ClientesUtilsTemp;
 import com.bhargav.tool.ModelClass.ClientesUtilsTempFinal;
@@ -61,6 +62,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.zebra.sdk.comm.BluetoothConnection;
+import com.zebra.sdk.comm.Connection;
+import com.zebra.sdk.comm.ConnectionException;
+import com.zebra.sdk.comm.TcpConnection;
+import com.zebra.sdk.printer.PrinterLanguage;
+import com.zebra.sdk.printer.SGD;
+import com.zebra.sdk.printer.ZebraPrinter;
+import com.zebra.sdk.printer.ZebraPrinterFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -80,6 +89,9 @@ import retrofit2.Response;
 import android.provider.MediaStore;
 
 public class FormActivity extends AppCompatActivity {
+
+    //printer connection
+    private Connection connection;
 
     EditText txt_cliente, txt_obs;
     Context context = FormActivity.this;
@@ -129,7 +141,7 @@ public class FormActivity extends AppCompatActivity {
                 new TypeToken<ArrayList<ClientesUtils>>() {
                 }.getType());
 
-
+        Log.e("traigo",""+detallePlanificacionsData.size());
         division_position = detallePlanificacionsData.get(position).getDivisionPosition();
         division_name = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getNombreDivision();
 
@@ -141,6 +153,7 @@ public class FormActivity extends AppCompatActivity {
 
         listAdapterForNewList = new ListAdapterForNewList(this, division_name, divisionesData.size());
         llmNew = new LinearLayoutManager(this);
+
 
         recyclerViewNew.setAdapter(listAdapterForNewList);
         recyclerViewNew.setLayoutManager(llmNew);
@@ -157,8 +170,13 @@ public class FormActivity extends AppCompatActivity {
         btn_image.setOnClickListener(v -> camera());
         btn_print.setOnClickListener(v -> apiJsonCreate());
 
-        if (detallePlanificacionsData.get(position).getImage() != null){
-            byte[] decodedString = Base64.decode(detallePlanificacionsData.get(position).getImage(), Base64.DEFAULT);
+        //if (detallePlanificacionsData.get(position).getImage() != null){
+        if(!detallePlanificacionsData.get(position).lsArchivosAdjuntos2.isEmpty()){
+        Log.e("archivos", String.valueOf(detallePlanificacionsData.get(position).lsArchivosAdjuntos2.size()));
+        //}
+        //if(detallePlanificacionsData.get(position).lsArchivosAdjuntos2.get(0).getArchivoEnBase64() != null){
+            //byte[] decodedString = Base64.decode(detallePlanificacionsData.get(position).getImage(), Base64.DEFAULT);
+            byte[] decodedString = Base64.decode(detallePlanificacionsData.get(position).lsArchivosAdjuntos2.get(0).getArchivoEnBase64(), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             img_view.setImageBitmap(decodedByte);
         }
@@ -181,23 +199,21 @@ public class FormActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG,100, outputStream);
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                //imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+            ArchivosAdjuntos2  archivo = new ArchivosAdjuntos2();
 
             String cadena = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
 
-                    cadena = cadena.replaceAll("\\s+","");
-                    detallePlanificacionsData.get(position).setImage(cadena);
+            cadena = cadena.replaceAll("\\s+","");
+           // detallePlanificacionsData.get(position).setImage(cadena);
+            archivo.setArchivoEnBase64(cadena);
+            detallePlanificacionsData.get(position).lsArchivosAdjuntos2.add(archivo);
 
             byte[] decodedString = Base64.decode(cadena, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             img_view.setImageBitmap(decodedByte);
 
-            Log.d("imagen", cadena);
-            //}
-            //agregar a arreglo de imagenes a enviar
-            //imageView.setImageBitmap(imageBitmap);
+
         }
     }
 
@@ -230,10 +246,8 @@ public class FormActivity extends AppCompatActivity {
         temp_2 = gson.fromJson(json,
                 new TypeToken<ClientesUtilsTemp>() {
                 }.getType());
-
         temp_2.setCodigoCliente(Integer.parseInt(tempArr.getCodigo()));
         temp_2.setCodigoFormaPago(Integer.parseInt(temp_2.lsDivisiones.get(0).getCodigoFormaPago()));
-        Log.e("el codigo de pago es:" , temp_2.lsDivisiones.get(0).getCodigoFormaPago());
 
         temp_2.setSecuenciaReciboCobro(Integer.parseInt(Utils.getData(context, "INVOICENO")));
         temp_2.setSecuencialPersonal(Integer.parseInt(Utils.getData(context, "Personal")));
@@ -250,11 +264,8 @@ public class FormActivity extends AppCompatActivity {
         temp_2.setInvoce_No(new_invoice_no);
         Utils.saveData(context, "INVOICENO", String.valueOf(Integer.parseInt(Utils.getData(context, "INVOICENO")) + 1));
         temp_2.setCodigoDivision((detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCodigoDivision()));
-        Log.e("totoal", detallePlanificacionsData.get(position).lsDivisiones.size() + " total" + position + "." + division_position);
 
-        for (int i = 0 ; i<= division_position; i++){
-            Log.e("verefe-trans", i + ".-" +detallePlanificacionsData.get(position).lsDivisiones.get(i).isEsEfectivo() + " - " + detallePlanificacionsData.get(position).lsDivisiones.get(i).isEsTransferencia());
-        }
+
         ClientesUtilsTemp temp_3 = temp_2;
 
         for (int i = temp_2.lsDivisiones.size() - 1; i >= 0; i--) {
@@ -274,43 +285,73 @@ public class FormActivity extends AppCompatActivity {
             Double temp_valor = temp_3.lsDivisiones.get(i).getValor();
             temp_3.lsDivisiones.get(i).setValor(temp_3.lsDivisiones.get(i).getValorAplicado());
             temp_3.lsDivisiones.get(i).setValorAplicado(temp_valor);
+            Log.e("formapago", temp_2.lsDivisiones.get(0).getCodigoFormaPago());
             if(temp_2.lsDivisiones.get(0).getCodigoFormaPago().equals("1")){
-                Log.e("abono", String.valueOf(temp_3.lsDivisiones.get(i).getValorAplicado()));
-                 if(temp_3.lsDivisiones.get(i).getValorAplicado() <=0){
-                    Toast.makeText(context, "El total abono es obligatorio", Toast.LENGTH_SHORT).show();
+                /*if(temp_3.lsDivisiones.get(i).getValorSinAplicar()<=0){
+                    Toast.makeText(context, "El total sin aplicar es obligatorio", Toast.LENGTH_SHORT).show();
+                    should_pass = should_pass && false;
+                }*/
+                if(temp_3.lsDivisiones.get(i).getValor() <=0){
+                    Toast.makeText(context, "El total abono es obligatorio", Toast.LENGTH_LONG).show();
                     should_pass = should_pass && false;
                 }
 
             }
             if(temp_2.lsDivisiones.get(0).getCodigoFormaPago().equals("2")){
-                if(temp_3.lsDivisiones.get(i).getValorAplicado() <=0){
-                    Toast.makeText(context, "El total abono es obligatorio cheque", Toast.LENGTH_SHORT).show();
+                //if numero documento
+                if(temp_3.lsDivisiones.get(i).getNumeroTransaccion() <= 0){
+                    Toast.makeText(context, "El numero de documento es obligatorio", Toast.LENGTH_LONG).show();
+                    should_pass = should_pass && false;
+                }
+                //if total abono
+                if(temp_3.lsDivisiones.get(i).getValor() <=0){
+                    Toast.makeText(context, "El total abono es obligatorio", Toast.LENGTH_LONG).show();
+                    should_pass = should_pass && false;
+                }
+                //if fecha cobro
+                if(temp_3.lsDivisiones.get(i).getFechaCheque()== null) {
+                    Toast.makeText(context, "La fecha de cobro es obligatoria", Toast.LENGTH_SHORT).show();
+                    should_pass = should_pass && false;
+                }
+                //if fecha entrega
+                if(temp_3.lsDivisiones.get(i).getFechaEntrega()== null) {
+                    Toast.makeText(context, "La fecha de entrega es obligatoria", Toast.LENGTH_SHORT).show();
                     should_pass = should_pass && false;
                 }
 
+
             }
+
             if(temp_2.lsDivisiones.get(0).getCodigoFormaPago().equals("6")){
-                if(temp_3.lsDivisiones.get(i).getValorAplicado() <=0){
-                    Toast.makeText(context, "El total abono es obligatorio Deposito", Toast.LENGTH_SHORT).show();
+                /*if(temp_3.lsDivisiones.get(i).getValorSinAplicar() <=0){
+                    Toast.makeText(context, "El total abono es obligatorio en Deposito", Toast.LENGTH_SHORT).show();
+                    should_pass = should_pass && false;
+                }*/
+                //if efectivo -> if #documento
+                if(tempArr.lsDivisiones.get(i).isEsEfectivo() && temp_3.lsDivisiones.get(i).getNumeroTransaccion() <= 0){
+                    Toast.makeText(context, "El numero de documento es obligatorio", Toast.LENGTH_LONG).show();
                     should_pass = should_pass && false;
                 }
-                //Log.e("estransferencia", String.valueOf(temp_3.lsDivisiones.get(i).isTransferencia()) + " - " + position + " - "+ i);
-                //Log.e("estransferencia1", String.valueOf(temp_3.lsDivisiones.size()) + " - " + position + " - "+ 1);
-                if(temp_3.lsDivisiones.get(i).isTransferencia()){
-
-                    if(temp_3.lsDivisiones.get(i).getNumeroTransaccion()>0){
-                        Toast.makeText(context, "El numero de documento es obligatorio", Toast.LENGTH_SHORT).show();
-                        should_pass = should_pass && false;
-                    }
+                //if total abono
+                if(temp_3.lsDivisiones.get(i).getValor() <=0){
+                    Toast.makeText(context, "El total abono es obligatorio", Toast.LENGTH_LONG).show();
+                    should_pass = should_pass && false;
+                }
+                //if fecha entrega
+                if(temp_3.lsDivisiones.get(i).getFechaEntrega()== null) {
+                    Toast.makeText(context, "La fecha de entrega es obligatoria", Toast.LENGTH_SHORT).show();
+                    should_pass = should_pass && false;
                 }
 
             }
-            if(temp_3.lsDivisiones.get(i).getValorAplicado() > temp_3.lsDivisiones.get(i).getValor() && temp_3.lsDivisiones.get(i).getCodigoFormaPago() == "2"){
-                Toast.makeText(context, "El Valor aplicado es menor al valor que esta pagando", Toast.LENGTH_SHORT).show();
+            if((temp_3.lsDivisiones.get(i).getValorAplicado() > temp_3.lsDivisiones.get(i).getValor())){ //|| (temp_3.lsDivisiones.get(i).getCodigoFormaPago() == "2")
+                Toast.makeText(context, "El Valor del abono es invalido", Toast.LENGTH_SHORT).show();
                 should_pass = should_pass && false;
             }else{
+                Log.e("whyyy","pasa");
                 should_pass = should_pass && true;
             }
+            //should_pass = false;
             ArrayList<ClientesUtils> detalleInicial = new ArrayList<>();
             detalleInicial = gson.fromJson(Utils.getData(context, "SaveDetallePlanifi"),
                     new TypeToken<ArrayList<ClientesUtils>>() {
@@ -337,18 +378,28 @@ public class FormActivity extends AppCompatActivity {
                     nueva.setValor(temp_3.lsDivisiones.get(i).lsFacturasXCobrar.get(j).getValor());
                     facturasPago.add(nueva);
                 }
-                for(int m=0; m<facturasInicial.size();m++){
-                    for(int n = 0; n<facturasPago.size();n++){
-                        if(facturasInicial.get(m).getSecuenciaComprobante()==
-                        facturasPago.get(n).getSecuenciaComprobante()){
-                            if(facturasInicial.get(m).getTotalFactura()<
-                                    facturasPago.get(n).getValor()){
-                                should_pass= false;
-                                Toast.makeText(context, "Los pagos realizados en la factura "+ facturasInicial.get(m).getFactura() + " no pueden ser mayor a "+ facturasInicial.get(m).getTotalFactura(), Toast.LENGTH_SHORT).show();
+                for(int m=0; m<facturasInicial.size();m++) {
+                    for (int n = 0; n < facturasPago.size(); n++) {
+                        if (facturasInicial.get(m).getSecuenciaComprobante() ==
+                                facturasPago.get(n).getSecuenciaComprobante()) {
+                            if ((facturasInicial.get(m).getTotalFactura() <
+                                    facturasPago.get(n).getValor()) || facturasPago.get(n).getIsChecked() == 1) {
+                                should_pass = false;
+                                Log.e("tocada", facturasPago.get(m).getIsChecked() + "/" + facturasPago.get(n).getValor());
+                                Toast.makeText(context, "Los pagos realizados en la factura " + facturasInicial.get(m).getFactura() + " no pueden ser mayor a " + facturasInicial.get(m).getTotalFactura(), Toast.LENGTH_SHORT).show();
+                            } else {
+
                             }
                         }
                     }
                 }
+                Log.i("cantidad", facturasPago.size()+"?");
+                /*for(int n=0; i< facturasPago.size()-1;n++){
+                    if(facturasPago.get(n).getIsChecked() == 1){
+                        Log.e("esta pagada", facturasPago.get(n).getValor()+ ": "+ facturasPago.get(n).getFactura()+" - " + facturasPago.get(n).getTotalFactura()+ " / " + facturasPago.get(n).getValorXCobrar());
+                    }
+                }*/
+
                 if (temp_3.lsDivisiones.get(i)
                         .lsFacturasXCobrar.get(j).getIsChecked() == 0) {
                     temp_3.lsDivisiones.get(i).lsFacturasXCobrar.get(j).getValor();
@@ -373,16 +424,195 @@ public class FormActivity extends AppCompatActivity {
 
         Utils.saveData(context, "UploadTemp", jsonFinal);
         System.out.println("Call Api Body : " + jsonFinal);
-
+        ArrayList<FacturasXCobrar> facturasPagadas = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar;
+        for (int j = 0; facturasPagadas.size() > j; j++) {
+            Log.e("checked", facturasPagadas.get(j).getIsChecked()+".");
+            if(facturasPagadas.get(j).getIsChecked()==0){
+                //Log.e("imprimir 1", facturasPagadas.get(j).getFactura()+" - " + facturasPagadas.get(j).getTotalFactura()+ " / " + facturasPagadas.get(j).getValorXCobrar());
+                facturasPagadas.remove(j);
+            }
+        }
+        Log.e("facturas totales",detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.size()+".");
         if(should_pass){
-            //screenshot();
-            uploadData();
-            Intent intent = new Intent(context, PlanningActivity.class);
-            startActivity(intent);
-            finish();
+            //printReceipt(detallePlanificacionsData.get(position).getNombres());
+            //detallePlanificacionsData.remove(position);
+            //uploadData();
+            //Intent intent = new Intent(context, PlanningActivity.class);
+            //startActivity(intent);
+            //finish();
             //revisar el mainactivity si ese no hacia que se borre de la lista!!!
         }
 
+    }
+
+   /* private boolean isBluetoothSelected() {
+        return btRadioButton.isChecked();
+    }*/
+
+    private String getMacAddressFieldText() {
+        //
+        return Utils.getData(context, "macAdress");//"F8:8A:5E:A9:14:83";//macAddressEditText.getText().toString();
+    }
+
+    private void getPrinterStatus() throws ConnectionException {
+
+
+        final String printerLanguage = SGD.GET("device.languages", connection);
+
+        final String displayPrinterLanguage = "Printer Language is " + printerLanguage;
+
+        SGD.SET("device.languages", "zpl", connection);
+
+        /*this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                Toast.makeText(context, displayPrinterLanguage + "\n" + "Language set to ZPL", Toast.LENGTH_LONG).show();
+
+            }
+        });*/
+
+    }
+
+    private Connection getZebraPrinterConn() {
+        return new BluetoothConnection(getMacAddressFieldText());
+    }
+
+    private void testSendFile(ZebraPrinter printer, String cliente) {
+        Log.e("llego","testSendFile");
+        try {
+            File filepath = getFileStreamPath("TEST.LBL");
+            createDemoFile(printer, "TEST.LBL", cliente);
+            printer.sendFileContents(filepath.getAbsolutePath());
+            //SettingsHelper.saveBluetoothAddress(this, getMacAddressFieldText());
+            //SettingsHelper.saveIp(this, getTcpAddress());
+            //SettingsHelper.savePort(this, getTcpPortNumber());
+
+        } catch (ConnectionException e1) {
+            Log.e("","Error sending file to printer");
+            //helper.showErrorDialogOnGuiThread("Error sending file to printer");
+        } catch (IOException e) {
+            Log.e("","Error creating file");
+            //helper.showErrorDialogOnGuiThread("Error creating file");
+        } catch ( Exception e0){
+            Log.e("", "se cayo: " + e0.getMessage());
+        }
+    }
+
+    private void createDemoFile(ZebraPrinter printer, String fileName, String cliente) throws IOException {
+       FileOutputStream os = this.openFileOutput(fileName, Context.MODE_PRIVATE);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date today = new Date();
+        String dateString = dateFormat.format(today.getTime());
+        SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
+
+        String datetime = hourFormat.format(today.getTime());
+        String[] formasPago = {"", "Efectivo", "Deposito", "","","","Cheque"};
+        String recibo_no = Utils.getData(context, "INVOICENO");
+        Log.e("recibo",recibo_no);
+        Log.e("dt", detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getNombreDivision());
+        String division = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getNombreDivision();
+        String fecha = dateString;
+        String hora = datetime;
+        String formaPago = formasPago[detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCodigoFormaPago()];
+        byte[] configLabel = null;
+        //Log.e("cobros a",detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.);
+        String texto = "^XA\n" +
+                "\n" +
+                "^FX Top section with logo, name and address.\n" +
+                "^CF0,30\n" +
+                "^FO145,60^FDIMPORTADORA INDUSTRIAL^FS\n" +
+                "^FO155,90^FDAGRICOLA DEL MONTE SA^FS\n" +
+                "^CFA,30\n" +
+                "^FO220,150^FDRecibo: "+ recibo_no +" ^FS\n" +
+                "\n" +
+                "^FX Second section with recipient address and permit information.\n" +
+                "^CFA,15\n" +
+                "^FO75,200^GB450,50,3^FS\n" +
+                "^FO90,220^FDCliente: ^FS\n" +
+                "^FO185,220^FD"+cliente+"^FS\n" +
+                "^CFA,30\n" +
+                "^FO20,280^FDFecha: "+fecha+" Hora: "+hora+"^FS\n" +
+                "^FO100,320^FDForma de Pago: "+formaPago+"^FS\n" +
+                "^FO75,360^FDDivision: "+division+"^FS\n" +
+                "^FO50,400^GB500,3,3^FS\n" +
+                "\n" +
+                "^FX Third section with documents and values.\n" +
+                "^CF0,30\n" +
+                "^FO50,420^FDDocumento^FS\n" +
+                "^FO450,420^FDValor^FS\n" +
+                "^CFA,20\n" +
+                "^FO50,460^FDCheque #122345^FS\n" +
+                "^FO450,460^FD$1500^FS\n" +
+                "^FO50,490^GB500,3,3^FS\n" +
+                "^CF0,30\n" +
+                "^FO380,500^FDTotal^FS\n" +
+                "^FO450,500^FD$1500^FS\n" +
+                "\n" +
+                "^FX Fourth section with documents and values.\n" +
+                "^FO50,540^GB500,3,3^FS\n" +
+                "^CF0,30\n" +
+                "^FO50,550^FDFactura^FS\n" +
+                "^FO330,550^FDDoc.^FS\n" +
+                "^FO450,550^FDAbono^FS\n" +
+                "^CFA,20\n" +
+                "^FO50,590^FD001-004-000001452^FS\n" +
+                "^FO330,590^FD125447^FS\n" +
+                "^FO450,590^FD$1500^FS\n" +
+                "^FO50,620^GB500,3,3^FS\n" +
+                "^CF0,30\n" +
+                "^FO310,650^FDSubtotal:^FS\n" +
+                "^FO450,650^FD$1500^FS\n" +
+                "^FO275,680^FDSin Aplicar:^FS\n" +
+                "^FO450,680^FD$0^FS\n" +
+                "^FO50,710^GB500,3,3^FS\n" +
+                "^CF0,30\n" +
+                "^FO380,720^FDTotal^FS\n" +
+                "^FO450,720^FD$1500^FS\n" +
+                "\n" +
+                "^FX Fiveth section created by.\n" +
+                "^CFA,20\n" +
+                "^FO50,780^FDEmitido por: ^FS\n" +
+                "^FO200,780^FDMMUNOZ^FS\n" +
+                "\n" +
+                "\n" +
+                "^FO50,820^FDTel: 593 4 700260 Ext. 4726^FS\n" +
+                "^FO50,845^FDEmail: cobranzas@delmonte.com.ec^FS\n" +
+                "^XZ";
+
+        PrinterLanguage pl = printer.getPrinterControlLanguage();
+        Log.e("pl",pl.toString());
+        if (pl == PrinterLanguage.ZPL) {
+
+            //configLabel = "^XA^FO17,16^GB379,371,8^FS^FT65,255^A0N,135,134^FDTEST^FS^XZ".getBytes();
+            configLabel = texto.getBytes();
+
+        } else if (pl == PrinterLanguage.CPCL) {
+            String cpclConfigLabel = "! 0 200 200 406 1\r\n" + "ON-FEED IGNORE\r\n" + "BOX 20 20 380 380 8\r\n" + "T 0 6 137 177 TEST\r\n" + "PRINT\r\n";
+            configLabel = cpclConfigLabel.getBytes();
+        }
+        os.write(configLabel);
+        os.flush();
+        os.close();
+    }
+
+    public void printReceipt(String cliente){
+        Log.e("print","receipt");
+        try{
+            connection = getZebraPrinterConn();
+            connection.open();
+            ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+            getPrinterStatus();
+            testSendFile(printer, cliente);
+        }catch(Exception e){
+            Log.e("erro",e.getMessage());
+        }finally {
+            try{
+                connection.close();
+            }catch (Exception ex){
+                Log.e("printreceipt error","no pude cerrar la conexxion");
+            }
+        }
     }
 
     public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
@@ -445,7 +675,7 @@ public class FormActivity extends AppCompatActivity {
         txt_cliente.setEnabled(false);
         txt_cliente.setText(detallePlanificacionsData.get(position).getNombres());
 
-        txt_obs.setText(detallePlanificacionsData.get(position).getObservacion());
+        txt_obs.setText(detallePlanificacionsData.get(position).getObservaciones());
 
         txt_obs.addTextChangedListener(new TextWatcher() {
             @Override
@@ -458,7 +688,7 @@ public class FormActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                detallePlanificacionsData.get(position).setObservacion(txt_obs.getText().toString());
+                detallePlanificacionsData.get(position).setObservaciones(txt_obs.getText().toString());
             }
         });
 
@@ -583,7 +813,8 @@ public class FormActivity extends AppCompatActivity {
                         }
                         detallePlanificacionsData = detallePlanificacionsDataTemp;
 
-                        Intent intent = new Intent(context, PlanningActivity.class);
+                        Intent intent = new Intent(context, PlanningActivity
+                                .class);
                         startActivity(intent);
                         finish();
                     } else {
@@ -694,6 +925,8 @@ public class FormActivity extends AppCompatActivity {
 
 
 
+
+
             if (!detallePlanificacionsData.get(position).lsDivisiones.get(i).getNombreDivision().equals(division_name)) {
                 holder.rel_box.setVisibility(View.GONE);
             }else{
@@ -728,9 +961,17 @@ public class FormActivity extends AppCompatActivity {
             holder.cheque_date.setText(detallePlanificacionsData.get(position)
                     .lsDivisiones.get(i).getFechaCheque());
 
+
             holder.entrega_date.setEnabled(false);
             holder.entrega_date.setText(detallePlanificacionsData.get(position)
                     .lsDivisiones.get(i).getFechaEntrega());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date today = new Date();
+            String dateString = dateFormat.format(today.getTime());
+            holder.entrega_date.setText(dateString);
+            detallePlanificacionsData.get(position)
+                    .lsDivisiones.get(i).setFechaEntrega(dateString);
+            holder.entrega_date.setText(dateString);
 
             holder.ed_total.setEnabled(false);
             holder.ed_total.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor()));
@@ -744,11 +985,9 @@ public class FormActivity extends AppCompatActivity {
             }
             double tsa = detallePlanificacionsData.get(position).lsDivisiones.get(i).getTotalAbono() - detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor();
             holder.totalsinaplicar.setText(String.valueOf(tsa));
+            detallePlanificacionsData.get(position).lsDivisiones.get(i).setValorSinAplicar(tsa);
 
          //   if(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCodigoFormaPago()==6){
-                Log.e("estransferencia" + i + ".."+ division_position + "//"+ position, String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).isEsTransferencia()));
-                Log.e("esefectivo" + i + ".."+ division_position, String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).isEsEfectivo()));
-                Log.d("ver codigo formapago", String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getCodigoFormaPago()));
                 holder.efectivo.setChecked(detallePlanificacionsData.get(position).lsDivisiones.get(i).isEsEfectivo());
                 holder.transferencia.setChecked(detallePlanificacionsData.get(position).lsDivisiones.get(i).isEsTransferencia());
 
@@ -761,9 +1000,7 @@ public class FormActivity extends AppCompatActivity {
                 holder.efectivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        Log.e("cambio","clickeo efectivo" + position + " - "+ i);
                         if (holder.efectivo.isChecked()) {
-                            Log.e("clickeo ef en posicion", String.valueOf(i));
                             holder.transferencia.setChecked(false);
                             holder.efectivo.setChecked(true);
                             holder.rel_documento.setVisibility(View.VISIBLE);
@@ -783,9 +1020,7 @@ public class FormActivity extends AppCompatActivity {
                 holder.transferencia.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        Log.e("cambio","clickeo trnasferencia" + position + " - "+ i);
                         if (holder.transferencia.isChecked()) {
-                            Log.e("click tra en posicion", String.valueOf(i));
                             holder.transferencia.setChecked(true);
                             holder.efectivo.setChecked(false);
                             holder.rel_documento.setVisibility(View.GONE);
@@ -819,7 +1054,7 @@ public class FormActivity extends AppCompatActivity {
                             Calendar fromCal = Calendar.getInstance();
                             fromCal.setTimeInMillis(0);
                             fromCal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                             String dateString = dateFormat.format(fromCal.getTime());
                             holder.cheque_date.setText(dateString);
                             detallePlanificacionsData.get(position)
@@ -860,6 +1095,17 @@ public class FormActivity extends AppCompatActivity {
                             .setValor(Double.parseDouble(holder.ed_total.getText().toString()));
 
                     detallePlanificacionsData.get(position).setDivisionPosition(i);
+                    Log.e("cambie", "por aca");
+                    //detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                    //        .setTotalAbono(Double.parseDouble(holder.totalaplicado.getText().toString()));
+                    double tsa = detallePlanificacionsData.get(position).lsDivisiones.get(i).getTotalAbono() - detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor();
+                    holder.totalsinaplicar.setText(String.valueOf(tsa));
+                    detallePlanificacionsData.get(position)
+                            .lsDivisiones.get(i).setValorAplicado(Double.parseDouble(holder.totalaplicado.getText().toString()));
+                    detallePlanificacionsData.get(position)
+                            .lsDivisiones.get(i).setValorSinAplicar(tsa);
+
+
                     listAdapterForNewList.notifyDataSetChanged();
 
                     if(holder.efectivo.isChecked()){
@@ -883,7 +1129,6 @@ public class FormActivity extends AppCompatActivity {
 
             String document_no = String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getNumeroTransaccion());
 
-            Log.i("numero transaccion", document_no);
             if (document_no.equals("0")) {
                 holder.et_documento.setText("");
             } else {
@@ -908,6 +1153,40 @@ public class FormActivity extends AppCompatActivity {
                         detallePlanificacionsData.get(position).lsDivisiones.get(i)
                                 .setNumeroTransaccion(Integer.parseInt(holder.et_documento.getText().toString()));
                     }
+
+                    listAdapterForNewList.notifyDataSetChanged();
+                }
+            });
+
+            holder.ed_total.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    Log.e("cambiar", "valores");
+                    if (holder.totalaplicado.getText().toString().equals("")) {
+                        holder.totalaplicado.setText("0");
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setTotalAbono(0.0);
+                    } else {
+                        detallePlanificacionsData.get(position).lsDivisiones.get(i)
+                                .setTotalAbono(Double.parseDouble(holder.totalaplicado.getText().toString()));
+                        double tsa = detallePlanificacionsData.get(position).lsDivisiones.get(i).getTotalAbono() - detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor();
+                        holder.totalsinaplicar.setText(String.valueOf(tsa));
+                        detallePlanificacionsData.get(position)
+                                .lsDivisiones.get(i).setValorAplicado(Double.parseDouble(holder.totalaplicado.getText().toString()));
+                        detallePlanificacionsData.get(position)
+                                .lsDivisiones.get(i).setValorSinAplicar(tsa);
+                        listAdapterForNewList.notifyDataSetChanged();
+
+                    }
+
 
                     listAdapterForNewList.notifyDataSetChanged();
                 }
@@ -945,46 +1224,10 @@ public class FormActivity extends AppCompatActivity {
                     listAdapterForNewList.notifyDataSetChanged();
                 }
             });
-/*
-            holder.efectivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Log.e("cambio","clickeo efectivo" + position + " - "+ i);
-                    if (holder.efectivo.isChecked()) {
-                        holder.transferencia.setChecked(false);
-                        holder.efectivo.setChecked(true);
-                        holder.rel_documento.setVisibility(View.VISIBLE);
-                        detallePlanificacionsData.get(position).lsDivisiones.get(i).setEsEfectivo(true);
-                        detallePlanificacionsData.get(position).lsDivisiones.get(i).setEsTransferencia(false);
-
-                    } else {
-                        // your code to  no checked checkbox
-                    }
-                }
-            });
-
-            holder.transferencia.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Log.e("cambio","clickeo trnasferencia" + position + " - "+ i);
-                    if (holder.transferencia.isChecked()) {
-                        holder.efectivo.setChecked(false);
-                        holder.rel_documento.setVisibility(View.GONE);
-                        detallePlanificacionsData.get(position).lsDivisiones.get(i).setEsEfectivo(false);
-                        detallePlanificacionsData.get(position).lsDivisiones.get(i).setEsTransferencia(true);
-
-                    } else {
-                        // your code to  no checked checkbox
-                    }
-                }
-            });*/
-
-
 
             holder.entrega_date_img.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("click entrega", "click");
                     final Calendar cldr = Calendar.getInstance();
                     int day = cldr.get(Calendar.DAY_OF_MONTH);
                     int month = cldr.get(Calendar.MONTH);
@@ -1012,7 +1255,6 @@ public class FormActivity extends AppCompatActivity {
             nombreFormaPago = gson.fromJson(Utils.getData(context, "FormaPogo"),
                     new TypeToken<ArrayList<String>>() {
                     }.getType());
-//Log.d("nombreformapago", nombreFormaPago.get(i));
             ArrayAdapter ad = new ArrayAdapter(context, android.R.layout.simple_spinner_item, nombreFormaPago);
             ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             holder.spinner_forma_pago.setAdapter(ad);
@@ -1022,7 +1264,6 @@ public class FormActivity extends AppCompatActivity {
 
                 public void onItemSelected(AdapterView<?> parentView,
                                            View selectedItemView, int positionSpin, long id) {
-                    Log.e("error", "entre");
                     detallePlanificacionsData.get(position).lsDivisiones.get(i).setFormaPogoPosition(positionSpin);
                     ArrayList<Float> codigoFormaPago = new ArrayList<Float>();
                     Gson gson = new Gson();
@@ -1031,14 +1272,14 @@ public class FormActivity extends AppCompatActivity {
                             }.getType());
 
                     detallePlanificacionsData.get(position).lsDivisiones.get(i).setCodigoFormaPago(Math.round(codigoFormaPago.get(positionSpin)));
-                    Log.e("tipo", nombreFormaPago.get(positionSpin));
                     if (nombreFormaPago.get(positionSpin).equals("EFECTIVO")) {
-                     //   holder.rel_documento.setVisibility(View.GONE);
+                        holder.rel_documento.setVisibility(View.GONE);
                         holder.rel_cuenta.setVisibility(View.GONE);
                         holder.rel_cheque_date.setVisibility(View.GONE);
                         holder.rel_entrega_date.setVisibility(View.GONE);
-                        holder.totalsinaplicar_box.setVisibility(View.GONE);
-                        holder.totalaplicado_box.setVisibility(View.GONE);
+                        holder.totalsinaplicar_box.setVisibility(View.VISIBLE);
+                        holder.totalsinaplicar.setEnabled(false);
+                        holder.totalaplicado_box.setVisibility(View.VISIBLE);
                         holder.check_forma_pago.setVisibility(View.GONE);
 //                        holder.efectivo.setChecked(false);
 //                        holder.transferencia.setChecked(false);
@@ -1046,26 +1287,30 @@ public class FormActivity extends AppCompatActivity {
                         recyclerViewNew.setVisibility(View.GONE);
                         plate.setVisibility(View.GONE);
                     } else if(nombreFormaPago.get(positionSpin).equals("DEPOSITO")){
-                    //    holder.rel_documento.setVisibility(View.VISIBLE);
+                        Log.e("nombreformaPago", nombreFormaPago.get(positionSpin));
+                        holder.rel_documento.setVisibility(View.VISIBLE);
                         holder.check_forma_pago.setVisibility(View.VISIBLE);
                         holder.rel_cuenta.setVisibility(View.VISIBLE);
                         holder.rel_cheque_date.setVisibility(View.GONE);
                         holder.rel_entrega_date.setVisibility(View.VISIBLE);
-                        holder.totalsinaplicar_box.setVisibility(View.GONE);
+                        holder.totalsinaplicar_box.setVisibility(View.VISIBLE);
                         holder.totalaplicado_box.setVisibility(View.VISIBLE);
+                        holder.totalsinaplicar.setEnabled(false);
 //                        holder.efectivo.setChecked(false);
 //                        holder.transferencia.setChecked(false);
                         btn_add.setVisibility(View.VISIBLE);
                         recyclerViewNew.setVisibility(View.VISIBLE);
                         plate.setVisibility(View.VISIBLE);
-                    }else{
+                    }else if(nombreFormaPago.get(positionSpin).equals("CHEQUE")){
+                        Log.e("entra??", nombreFormaPago.get(positionSpin));
                         holder.check_forma_pago.setVisibility(View.GONE);
-                     //   holder.rel_documento.setVisibility(View.VISIBLE);
+                        holder.rel_documento.setVisibility(View.VISIBLE);
                         holder.rel_cuenta.setVisibility(View.VISIBLE);
                         holder.rel_cheque_date.setVisibility(View.VISIBLE);
                         holder.rel_entrega_date.setVisibility(View.VISIBLE);
                         holder.totalsinaplicar_box.setVisibility(View.VISIBLE);
                         holder.totalaplicado_box.setVisibility(View.VISIBLE);
+                        holder.totalsinaplicar.setEnabled(false);
 //                        holder.efectivo.setChecked(true);
 //                        holder.transferencia.setChecked(false);
                         btn_add.setVisibility(View.VISIBLE);
@@ -1153,7 +1398,7 @@ public class FormActivity extends AppCompatActivity {
                     tempArrr.setNumeroTransaccion(0);
                     tempArrr.setCuentaPosition(0);
                     tempArrr.setFechaCheque(null);
-                    tempArrr.setFechaEntrega(null);
+                    tempArrr.setFechaEntrega("01/01/2000");
                     tempArrr.setValor(0.0);
                     tempArrr.setCantidad(0);
                     tempArrr.setValorSinAplicar(0.0);
@@ -1265,11 +1510,12 @@ public class FormActivity extends AppCompatActivity {
                 holder.tv_documento.setText(document_no);
             }
             holder.tv_total.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getValor()));
+            holder.tv_total_sin_aplicar.setText(String.valueOf(detallePlanificacionsData.get(position).lsDivisiones.get(i).getValorSinAplicar()));
 
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tv_cantidad, tv_documento, tv_total;
+            TextView tv_cantidad, tv_documento, tv_total, tv_total_sin_aplicar;
             LinearLayout plate;
 
             public ViewHolder(View itemView) {
@@ -1277,6 +1523,7 @@ public class FormActivity extends AppCompatActivity {
                 tv_cantidad = itemView.findViewById(R.id.tv_cantidad);
                 tv_documento = itemView.findViewById(R.id.tv_documento);
                 tv_total = itemView.findViewById(R.id.tv_total);
+                tv_total_sin_aplicar = itemView.findViewById(R.id.tv_total_sin_aplicar);
                 plate = itemView.findViewById(R.id.plate);
 
             }

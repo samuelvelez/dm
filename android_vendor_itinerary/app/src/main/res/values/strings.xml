@@ -76,4 +76,5 @@
     <string name="observacion">Observacion</string>
     <string name="add_photo">Agregar Foto</string>
     <string name="forma_pago_tipo">Tipo</string>
+    <string name="sinaplicar">Sin Aplicar</string>
 </resources>

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,7 @@ public class PlanningActivity extends AppCompatActivity {
         gridList = (ListView) findViewById(R.id.listview_for_grid);
 
         simpleList = findViewById(R.id.simpleListView);
-
+        //Log.d("macaddress",Utils.getData(context, "macAdress"));
         if (Utils.getData(context, "DataSaveDate") == null) {
             Utils.saveData(context, "DataSaveDate", formattedDate);
         }
@@ -90,7 +91,7 @@ public class PlanningActivity extends AppCompatActivity {
                 detallePlanificacionsDataSave = gson.fromJson(Utils.getData(context, "SaveDetallePlanifi"),
                         new TypeToken<ArrayList<ClientesUtils>>() {
                         }.getType());
-
+                //Log.e("traigo en total", detallePlanificacionsDataSave.get(0).getFilled()+"");
                 AdapterForList adapterForList = new AdapterForList(detallePlanificacionsDataSave);
                 gridList.setAdapter(adapterForList);
             } else {

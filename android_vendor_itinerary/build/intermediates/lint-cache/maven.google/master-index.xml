@@ -66,6 +66,7 @@
   <androidx.media2/>
   <androidx.media3/>
   <androidx.mediarouter/>
+  <androidx.metrics/>
   <androidx.multidex/>
   <androidx.navigation/>
   <androidx.navigation.safeargs/>
@@ -117,9 +118,11 @@
   <com.android.asset-pack/>
   <com.android.asset-pack-bundle/>
   <com.android.billingclient/>
+  <com.android.car.setupwizardlib/>
   <com.android.car.ui/>
   <com.android.databinding/>
   <com.android.dynamic-feature/>
+  <com.android.fused-library/>
   <com.android.installreferrer/>
   <com.android.java.tools.build/>
   <com.android.library/>
@@ -160,6 +163,7 @@
   <com.google.android.ads/>
   <com.google.android.ads.consent/>
   <com.google.android.apps.common.testing.accessibility.framework/>
+  <com.google.android.car.connectionservice/>
   <com.google.android.datatransport/>
   <com.google.android.enterprise.connectedapps/>
   <com.google.android.exoplayer/>

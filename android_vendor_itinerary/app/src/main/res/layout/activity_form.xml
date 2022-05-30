@@ -141,7 +141,7 @@
                 <RelativeLayout
                     android:layout_width="@dimen/_50dip"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.4"
                     android:background="@drawable/boarder_squer">
 
                     <TextView
@@ -159,7 +159,7 @@
                     android:layout_width="@dimen/_50dip"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="-1dp"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.15"
                     android:background="@drawable/boarder_squer">
 
                     <TextView
@@ -177,7 +177,7 @@
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="-1dp"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.15"
                     android:background="@drawable/boarder_squer">
 
                     <TextView
@@ -187,6 +187,25 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:text="@string/total"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sip" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-1dp"
+                    android:layout_weight="0.3"
+                    android:background="@drawable/boarder_squer">
+
+                    <TextView
+                        android:id="@+id/tv_total_sin_aplicar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/sinaplicar"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sip" />
 
