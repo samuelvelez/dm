@@ -52,7 +52,9 @@ import com.bhargav.tool.ModelClass.ArchivosAdjuntos2;
 import com.bhargav.tool.ModelClass.ClientesUtils;
 import com.bhargav.tool.ModelClass.ClientesUtilsTemp;
 import com.bhargav.tool.ModelClass.ClientesUtilsTempFinal;
+import com.bhargav.tool.ModelClass.DataPrint;
 import com.bhargav.tool.ModelClass.Divisiones;
+import com.bhargav.tool.ModelClass.FacturasPrint;
 import com.bhargav.tool.ModelClass.FacturasXCobrar;
 import com.bhargav.tool.ModelClass.RestClient;
 import com.bhargav.tool.Printer.MainActivity;
@@ -432,9 +434,11 @@ public class FormActivity extends AppCompatActivity {
                 facturasPagadas.remove(j);
             }
         }
-        Log.e("facturas totales",detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.size()+".");
+
         if(should_pass){
-            //printReceipt(detallePlanificacionsData.get(position).getNombres());
+            FacturasPrint fac = createFacturasPrint(500);
+            Log.d("w", fac.getFacturas());
+            printReceipt(detallePlanificacionsData.get(position).getNombres());
             //detallePlanificacionsData.remove(position);
             //uploadData();
             //Intent intent = new Intent(context, PlanningActivity.class);
@@ -451,7 +455,7 @@ public class FormActivity extends AppCompatActivity {
 
     private String getMacAddressFieldText() {
         //
-        return Utils.getData(context, "macAdress");//"F8:8A:5E:A9:14:83";//macAddressEditText.getText().toString();
+        return "F8:8A:5E:B9:CF:76";//Utils.getData(context, "macAdress");//"F8:8A:5E:A9:14:83";//macAddressEditText.getText().toString();
     }
 
     private void getPrinterStatus() throws ConnectionException {
@@ -499,7 +503,35 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
+    private FacturasPrint createFacturasPrint(int posy){
+        FacturasPrint res = new FacturasPrint();
+        double totalAbonos = 0;
+
+        String facturasPagadas = "";
+        for(int i=0; i< detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.size();i++){
+            if(detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.get(i).getIsChecked()==1){
+                String factura = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.get(i).getFactura();
+                String documento = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getNumeroTransaccion()+"";
+                Double valor = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.get(i).getValor();
+
+                totalAbonos = totalAbonos + valor;
+
+                facturasPagadas = facturasPagadas + "^FO50,"+posy+"^FD"+factura+"^FS\n" +
+                        "^FO330,"+posy+"^FD"+documento+"^FS\n" +
+                        "^FO450,"+posy+"^FD$"+valor+"^FS\n";
+                posy = posy + 50;
+
+            }
+        }
+        res.setFacturas(facturasPagadas);
+        res.setPosy(posy);
+        res.setValor(totalAbonos);
+        return res;
+    }
     private void createDemoFile(ZebraPrinter printer, String fileName, String cliente) throws IOException {
+        Log.e("facturas totales",detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.size()+".");
+
+
        FileOutputStream os = this.openFileOutput(fileName, Context.MODE_PRIVATE);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date today = new Date();
@@ -509,14 +541,13 @@ public class FormActivity extends AppCompatActivity {
         String datetime = hourFormat.format(today.getTime());
         String[] formasPago = {"", "Efectivo", "Deposito", "","","","Cheque"};
         String recibo_no = Utils.getData(context, "INVOICENO");
-        Log.e("recibo",recibo_no);
-        Log.e("dt", detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getNombreDivision());
         String division = detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getNombreDivision();
         String fecha = dateString;
         String hora = datetime;
         String formaPago = formasPago[detallePlanificacionsData.get(position).lsDivisiones.get(division_position).getCodigoFormaPago()];
         byte[] configLabel = null;
         //Log.e("cobros a",detallePlanificacionsData.get(position).lsDivisiones.get(division_position).lsFacturasXCobrar.);
+        FacturasPrint facturas = createFacturasPrint(590);
         String texto = "^XA\n" +
                 "\n" +
                 "^FX Top section with logo, name and address.\n" +
@@ -556,19 +587,20 @@ public class FormActivity extends AppCompatActivity {
                 "^FO330,550^FDDoc.^FS\n" +
                 "^FO450,550^FDAbono^FS\n" +
                 "^CFA,20\n" +
-                "^FO50,590^FD001-004-000001452^FS\n" +
-                "^FO330,590^FD125447^FS\n" +
-                "^FO450,590^FD$1500^FS\n" +
+                facturas.getFacturas()+
+                //"^FO50,590^FD001-004-000001452^FS\n" +
+                //"^FO330,590^FD125447^FS\n" +
+                //"^FO450,590^FD$1500^FS\n" +
                 "^FO50,620^GB500,3,3^FS\n" +
                 "^CF0,30\n" +
                 "^FO310,650^FDSubtotal:^FS\n" +
-                "^FO450,650^FD$1500^FS\n" +
+                "^FO450,650^FD$"+facturas.getValor()+"^FS\n" +
                 "^FO275,680^FDSin Aplicar:^FS\n" +
                 "^FO450,680^FD$0^FS\n" +
                 "^FO50,710^GB500,3,3^FS\n" +
                 "^CF0,30\n" +
                 "^FO380,720^FDTotal^FS\n" +
-                "^FO450,720^FD$1500^FS\n" +
+                "^FO450,720^FD$"+facturas.getValor()+"^FS\n" +
                 "\n" +
                 "^FX Fiveth section created by.\n" +
                 "^CFA,20\n" +
@@ -580,6 +612,7 @@ public class FormActivity extends AppCompatActivity {
                 "^FO50,845^FDEmail: cobranzas@delmonte.com.ec^FS\n" +
                 "^XZ";
 
+        Log.d("Zq530", texto);
         PrinterLanguage pl = printer.getPrinterControlLanguage();
         Log.e("pl",pl.toString());
         if (pl == PrinterLanguage.ZPL) {
